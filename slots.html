@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GG Case - Слоты</title>
+    <style>
+        body {
+            background-color: #121318;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 15px;
+            padding-bottom: 125px;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            text-align: center;
+        }
+
+        /* Шапка страницы */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .btn-back { color: #7a7c85; text-decoration: none; font-size: 16px; font-weight: 500; }
+        .stars-badge { background: #1b1c24; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; border: 1px solid #292a34; }
+
+        /* Живая лента сверху */
+        .live-ticker {
+            display: flex; gap: 12px; overflow-x: auto; white-space: nowrap;
+            padding: 5px 0; margin-bottom: 25px; justify-content: center;
+        }
+        .live-ticker::-webkit-scrollbar { display: none; }
+        .ticker-icon { font-size: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        /* ИГРОВОЙ АВТОМАТ (СЛОТЫ) */
+        .slots-machine {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            background: #1b1c24;
+            border: 1px solid #292a34;
+            border-radius: 24px;
+            padding: 20px 15px;
+            max-width: 340px;
+            margin: 0 auto 20px auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Горизонтальная линия фокуса по центру */
+        .slots-machine::after {
+            content: ''; position: absolute; left: 0; top: calc(50% - 1px);
+            width: 100%; height: 2px; background: rgba(255, 255, 255, 0.15);
+            pointer-events: none; z-index: 5;
+        }
+
+        .slot-reel {
+            width: 85px;
+            height: 180px;
+            background-color: #212123;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #292a34;
+        }
+
+        .reel-container {
+            position: absolute;
+            top: -60px;
+            left: 0; width: 100%;
+            display: flex; flex-direction: column;
+        }
+
+        .slot-item {
+            height: 100px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 44px; box-sizing: border-box;
+            transition: transform 0.1s ease;
+        }
+
+        /* Линейка выбора ставок */
+        .bet-selector-row {
+            display: flex; justify-content: center; gap: 6px;
+            max-width: 340px; margin: 0 auto 20px auto;
+        }
+        .bet-chip {
+            background: none; border: none; color: #7a7c85;
+            font-size: 13px; font-weight: bold; cursor: pointer;
+            padding: 6px 10px; border-radius: 10px; transition: color 0.2s;
+        }
+        .bet-chip.active { color: #ffaa00; font-size: 14px; }
+
+        .about-game-label { font-size: 12px; color: #55565f; margin-bottom: 20px; }
+
+        /* Вспомогательные кнопки управления */
+        .utility-row {
+            display: flex; justify-content: center; gap: 12px;
+            max-width: 340px; margin: 0 auto 20px auto;
+        }
+        .btn-utility {
+            flex: 1; background-color: #212123; border: 1px solid #292a34;
+            color: #ffffff; padding: 10px 0; border-radius: 14px;
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 6px;
+        }
+
+        /* Главная кнопка запуска */
+        .bottom-action-container {
+            position: fixed; bottom: 20px; left: 0; width: 100%;
+            display: flex; justify-content: center; padding: 0 15px; box-sizing: border-box;
+            z-index: 10;
+        }
+        .btn-spin {
+            background-color: #246bfd; color: white; border: none;
+            border-radius: 16px; padding: 15px 0; font-size: 16px;
+            font-weight: bold; width: 100%; max-width: 340px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(36, 107, 253, 0.4);
+        }
+        .btn-spin:disabled { background-color: #2b2c35; color: #55565f; cursor: not-allowed; box-shadow: none; }
+        .btn-spin.insufficient { background-color: #ff3b30 !important; }
+
+        /* ВСПЛЫВАЮЩЕЕ ОКНО ВЫСОКОГО РИСКА ИЗ МАКЕТА СЛОТОВ */
+        .risk-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .risk-modal-content {
+            background-color: #1b1c24;
+            width: 90%;
+            max-width: 330px;
+            border-radius: 24px;
+            padding: 25px 20px;
+            box-sizing: border-box;
+            border: 1px solid #292a34;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .risk-modal-close {
+            position: absolute; top: 16px; right: 20px;
+            font-size: 18px; color: #55565f; cursor: pointer;
+        }
+
+        .risk-icon-box {
+            width: 50px; height: 50px;
+            background-color: rgba(255, 59, 48, 0.1);
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
+            display: flex; justify-content: center; align-items: center;
+            border: 2px solid #ff3b30;
+        }
+
+        /* Знак запрета внутри круга по скриншоту */
+        .risk-icon-inner {
+            width: 22px; height: 22px;
+            border: 3px solid #ff3b30;
+            border-radius: 50%;
+            position: relative;
+            transform: rotate(45deg);
+        }
+        .risk-icon-inner::before {
+            content: ''; position: absolute;
+            width: 3px; height: 22px;
+            background-color: #ff3b30;
+            left: calc(50% - 1.5px); top: 0;
+        }
+
+        .risk-modal-title {
+            font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #ffffff;
+        }
+
+        .risk-modal-desc {
+            font-size: 12px; color: #7a7c85; line-height: 1.4;
+            margin-bottom: 25px; padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <a href="index.html" class="btn-back">← Назад</a>
+        <div class="stars-badge">⭐ <span id="user-balance">0</span></div>
+    </div>
+
+    <!-- Живая лента призов сверху -->
+    <div class="live-ticker">
+        <div class="ticker-icon">👑</div><div class="ticker-icon">🧸</div>
+        <div class="ticker-icon">🎃</div><div class="ticker-icon">🌸</div>
+        <div class="ticker-icon">🍬</div><div class="ticker-icon">🧢</div>
+        <div class="ticker-icon">🍦</div><div class="ticker-icon">💎</div>
+    </div>
+
+    <!-- Барабаны слотов -->
+    <div class="slots-machine">
+        <div class="slot-reel"><div class="reel-container" id="reel-0"></div></div>
+        <div class="slot-reel"><div class="reel-container" id="reel-1"></div></div>
+        <div class="slot-reel"><div class="reel-container" id="reel-2"></div></div>
+    </div>
+
+    <!-- Линейка выбора ставок по скриншоту -->
+    <div class="bet-selector-row">
+        <button class="bet-chip" onclick="selectBet(69, this)">⭐ 69</button>
+        <button class="bet-chip" onclick="selectBet(149, this)">⭐ 149</button>
+        <button class="bet-chip" onclick="selectBet(399, this)">⭐ 399</button>
+        <button class="bet-chip active" onclick="selectBet(999, this)">⭐ 999</button>
+        <button class="bet-chip" onclick="selectBet(1499, this)">⭐ 1499</button>
+    </div>
+
+    <div class="about-game-label">Об игре</div>
+
+    <div class="utility-row">
+        <button class="btn-utility">⚙️ Настройки</button>
+        <button class="btn-utility">🎁 Призы</button>
+    </div>
+
+    <div class="bottom-action-container">
+        <button class="btn-spin" id="spin-btn" onclick="triggerSpinAction()">Крутить за ⭐ 999</button>
+    </div>
+
+    <!-- ВСПЛЫВАЮЩЕЕ ОКНО ПРЕДУПРЕЖДЕНИЯ В ТОЧНОСТИ ПО СКРИНШОТУ -->
+    <div class="risk-modal-overlay" id="riskModal">
+        <div class="risk-modal-content">
+            <div class="risk-modal-close" onclick="closeRiskModal()">✕</div>
+            
+            <div class="risk-icon-box">
+                <div class="risk-icon-inner"></div>
+            </div>
+
+            <div class="risk-modal-title">Очень высокий риск!</div>
+            <div class="risk-modal-desc">
+                Ваша ставка очень мала, относительно минимального выигрыша. Чтобы снизить риск, повысьте ставку.
+            </div>
+
+            <button class="btn-spin" onclick="bypassRiskAndSpin()">Я осознаю риск</button>
+        </div>
+    </div>
+
+       <script>
+        // Иконки подарков из оригинального автомата GG Case
+        const itemsPool = ["👜", "👼", "💝", "🍦", "🐻", "💎", "👑", "🎃"];
+
+        let userBalance = 0; 
+        let currentBet = 999;
+        let isSpinning = false;
+
+        function initReels() {
+            for (let r = 0; r < 3; r++) {
+                const reel = document.getElementById('reel-' + r);
+                reel.innerHTML = '';
+                // Генерируем 15 элементов для красивой длинной ленты прокрутки
+                for (let i = 0; i < 15; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'slot-item';
+                    item.innerText = itemsPool[Math.floor(Math.random() * itemsPool.length)];
+                    reel.appendChild(item);
+                }
+            }
+        }
+
+        function selectBet(amount, btnElement) {
+            if (isSpinning) return;
+            currentBet = amount;
+            document.querySelectorAll('.bet-chip').forEach(function(chip) {
+                chip.classList.remove('active');
+            });
+            btnElement.classList.add('active');
+            
+            document.getElementById('spin-btn').innerText = 'Крутить за ⭐ ' + amount;
+            checkBalanceState();
+        }
+
+        function checkBalanceState() {
+            const btn = document.getElementById('spin-btn');
+            
+            // Если баланс равен 0, кнопка в лобби всегда будет блокироваться
+            if (currentBet > userBalance) {
+                btn.innerText = "Недостаточно звезд";
+                btn.classList.add('insufficient');
+                btn.disabled = true;
+            } else {
+                btn.innerText = 'Крутить за ⭐ ' + currentBet;
+                btn.classList.remove('insufficient');
+                btn.disabled = false;
+            }
+        }
+
+        // Перехват клика по главной кнопке автомата
+        function triggerSpinAction() {
+            if (isSpinning) return;
+
+            // Если выбраны дешевые ставки 69 или 149 — выводим окно предупреждения риска
+            if (currentBet === 69 || currentBet === 149) {
+                document.getElementById('riskModal').style.display = 'flex';
+            } else {
+                // Если ставки крупные (399, 999, 1499) — запускаем кручение сразу
+                executeReelsSpin();
+            }
+        }
+
+        function closeRiskModal() {
+            document.getElementById('riskModal').style.display = 'none';
+        }
+
+        // Клик по кнопке подтверждения внутри модалки
+        function bypassRiskAndSpin() {
+            closeRiskModal();
+            executeReelsSpin();
+        }
+
+        // Системный запуск прокрутки барабанов
+        function executeReelsSpin() {
+            if (currentBet > userBalance) return; 
+            
+            isSpinning = true;
+            document.getElementById('spin-btn').disabled = true;
+
+            userBalance -= currentBet;
+            document.getElementById('user-balance').innerText = userBalance;
+
+            // Математика казино (мягкий слив)
+            let dice = Math.random();
+            let finalResult = [];
+
+            if (dice < 0.10) {
+                // ДЖЕКПОТ: 3 одинаковых символа
+                let winItem = itemsPool[Math.floor(Math.random() * itemsPool.length)];
+                finalResult = [winItem, winItem, winItem];
+            } else if (dice < 0.35) {
+                // СРЕДНИЙ: 2 одинаковых символа
+                let itemA = itemsPool[Math.floor(Math.random() * itemsPool.length)];
+                let itemB = itemsPool[Math.floor(Math.random() * itemsPool.length)];
+                while(itemA === itemB) { itemB = itemsPool[Math.floor(Math.random() * itemsPool.length)]; }
+                finalResult = [itemA, itemA, itemB];
+            } else {
+                // ПРОИГРЫШ: Три разных иконки
+                let itemA = itemsPool[0]; let itemB = itemsPool[1]; let itemC = itemsPool[2];
+                finalResult = [itemA, itemB, itemC];
+            }
+
+            for (let r = 0; r < 3; r++) {
+                const reelContainer = document.getElementById('reel-' + r);
+                reelContainer.children[1].innerText = finalResult[r];
+                reelContainer.style.transition = "none";
+                reelContainer.style.top = "-60px";
+
+                setTimeout(function(currentReel, index) {
+                    currentReel.style.transition = 'top ' + (1.4 + index * 0.4) + 's cubic-bezier(0.25, 1, 0.5, 1)';
+                    currentReel.style.top = "-1060px";
+                }, 40, reelContainer, r);
+            }
+
+            setTimeout(function() {
+                isSpinning = false;
+                
+                // Проверка выигрыша
+                if (finalResult[0] === finalResult[1] && finalResult[1] === finalResult[2]) {
+                    let winPrize = currentBet * 5;
+                    alert('🎉 ДЖЕКПОТ! Выигрыш: ⭐ ' + winPrize);
+                    userBalance += winPrize;
+                } else if (finalResult[0] === finalResult[1] || finalResult[1] === finalResult[2] || finalResult[0] === finalResult[2]) {
+                    let winPrize = Math.floor(currentBet * 1.4);
+                    alert('💰 Совпадение двух предметов! Выигрыш: ⭐ ' + winPrize);
+                    userBalance += winPrize;
+                } else {
+                    alert("❌ Лента не совпала. Попробуйте еще раз!");
+                }
+
+                // Возвращаем барабаны автомата в исходное состояние
+                for(let r = 0; r < 3; r++) {
+                    const rc = document.getElementById('reel-' + r);
+                    rc.style.transition = "none";
+                    rc.style.top = "-60px";
+                    for(let i = 0; i < 15; i++) {
+                        if(i !== 1) rc.children[i].innerText = itemsPool[Math.floor(Math.random() * itemsPool.length)];
+                    }
+                }
+
+                document.getElementById('user-balance').innerText = userBalance;
+                checkBalanceState();
+            }, 2600);
+        }
+
+        initReels();
+        checkBalanceState();
+    </script>
+</body>
+</html>

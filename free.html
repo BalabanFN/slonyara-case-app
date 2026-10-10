@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GG Case</title>
+    <style>
+        body {
+            background-color: #121318;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 15px;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* Задний фон приложения (как будто под размытием) */
+        .background-blur {
+            filter: blur(10px);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .balance-container {
+            display: flex;
+            justify-content: space-around;
+            background: #1b1c24;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #292a34;
+        }
+
+        /* ТЕМНОЕ МОДАЛЬНОЕ ОКНО "БЕСПЛАТНО" */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background-color: #212123;
+            width: 90%;
+            max-width: 360px;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            font-size: 18px;
+            color: #7a7c85;
+            cursor: pointer;
+        }
+
+        /* Сетка для двух кейсов в один ряд */
+        .cases-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        /* Карточка кейса */
+        .case-item {
+            background-color: #2d2d31;
+            flex: 1;
+            border-radius: 16px;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .case-item:active {
+            transform: scale(0.95);
+            background-color: #353539;
+        }
+
+        /* Картинка/иконка кейса */
+        .case-icon-wrapper {
+            width: 75px;
+            height: 75px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .case-icon {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Инфо-строка (Название и Цена) */
+        .case-footer {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 5px;
+            box-sizing: border-box;
+            align-items: center;
+        }
+
+        .case-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .case-price {
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* Цвета ценников */
+        .price-stars {
+            color: #ffaa00; /* Золотой для Daily (0 звезд) */
+        }
+
+        .price-tickets {
+            color: #55aaff; /* Голубой для билетов */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Задний заблокированный фон приложения -->
+    <div class="background-blur">
+        <div class="header">GG Case Главная</div>
+        <div class="balance-container">
+            <div>Баланс: 0 ⭐</div>
+            <div>Билеты: 0 🎫</div>
+        </div>
+    </div>
+
+    <!-- ВСПЛЫВАЮЩЕЕ ОКНО "БЕСПЛАТНО" -->
+    <div class="modal-overlay">
+        <div class="modal-content">
+            
+            <div class="modal-header">Бесплатно</div>
+            <div class="modal-close" onclick="alert('Закрытие окна')">✕</div>
+
+            <div class="cases-grid">
+                
+                <!-- Левый кейс: Daily -->
+                <div class="case-item" onclick="openDaily()">
+                    <div class="case-icon-wrapper">
+                        <!-- Временная иконка сундука c эмодзи (заменим на PNG картинку) -->
+                        <span style="font-size: 55px;">🎃</span>
+                    </div>
+                    <div class="case-footer">
+                        <span class="case-name">Daily</span>
+                        <span class="case-price price-stars">⭐ 0</span>
+                    </div>
+                </div>
+
+                <!-- Правый кейс: Tickets -->
+                <div class="case-item" onclick="openTickets()">
+                    <div class="case-icon-wrapper">
+                        <!-- Временная иконка билетов c эмодзи -->
+                        <span style="font-size: 55px;">🧢</span>
+                    </div>
+                    <div class="case-footer">
+                        <span class="case-name">Tickets</span>
+                        <span class="case-price price-tickets">🎫 10</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openDaily() {
+            alert("Запуск кейса Daily за подписку!");
+        }
+
+        function openTickets() {
+            alert("Запуск кейса Tickets за 10 билетов!");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GG Case - Профиль</title>
+    <style>
+        body {
+            background-color: #121318;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 15px;
+            padding-bottom: 90px; /* Место под нижний таббар */
+            -webkit-user-select: none;
+            user-select: none;
+            text-align: center;
+        }
+
+        /* Шапка с названием и балансами */
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .app-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+        .balances-row { display: flex; gap: 10px; }
+        
+        .badge {
+            background-color: #1b1c24; padding: 6px 14px; border-radius: 20px;
+            font-weight: bold; font-size: 14px; border: 1px solid #292a34;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .badge-tickets { color: #55aaff; }
+
+        /* БЛОК РЕФЕРАЛЬНОЙ СИСТЕМЫ */
+        .referral-card {
+            background-color: #1b1c24;
+            border-radius: 24px;
+            padding: 20px 15px;
+            max-width: 360px;
+            margin: 15px auto 25px auto;
+            border: 1px solid #292a34;
+            box-sizing: border-box;
+        }
+        .ref-title { font-size: 16px; font-weight: bold; line-height: 1.3; margin-bottom: 6px; }
+        .ref-title span { color: #246bfd; }
+        .ref-desc { font-size: 11px; color: #7a7c85; line-height: 1.4; margin-bottom: 20px; }
+
+        /* Счетчики рефералов */
+        .counters-row {
+            display: flex; gap: 10px; margin-bottom: 20px;
+        }
+        .counter-box {
+            flex: 1; background-color: #212123; border-radius: 14px;
+            padding: 10px; border: 1px solid #292a34;
+        }
+        .counter-val { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
+        .counter-label { font-size: 11px; color: #55565f; }
+
+        /* Кнопки приглашения */
+        .action-row { display: flex; gap: 10px; }
+        .btn-invite {
+            flex: 1; background-color: #246bfd; color: white; border: none;
+            border-radius: 14px; padding: 12px 0; font-size: 14px; font-weight: bold; cursor: pointer;
+        }
+        .btn-copy {
+            background-color: #212123; border: 1px solid #292a34; color: white;
+            width: 44px; border-radius: 14px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; font-size: 16px;
+        }
+
+        /* БЛОК ИНВЕНТАРЯ */
+        .inventory-section-title {
+            font-size: 16px; font-weight: bold; margin-bottom: 15px; text-align: center;
+        }
+        .inventory-card {
+            background-color: #1b1c24; border-radius: 24px; padding: 30px 20px;
+            max-width: 360px; margin: 0 auto; border: 1px solid #292a34; box-sizing: border-box;
+        }
+        .empty-text { font-size: 13px; color: #7a7c85; margin-bottom: 15px; }
+        .btn-add-gift {
+            background-color: #212123; border: 1px solid #292a34; color: #ffffff;
+            padding: 8px 16px; border-radius: 14px; font-size: 12px; font-weight: 500;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin: 0 auto;
+        }
+
+        /* Нижний таббар навигации из 3-х разделов */
+        .tab-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background-color: #121318; border-top: 1px solid #292a34;
+            display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
+        }
+        .tab-item {
+            color: #55565f; font-size: 10px; font-weight: 500;
+            display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; width: 33.33%;
+        }
+        .tab-icon { font-size: 20px; }
+        .tab-item.active { color: #246bfd; }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка профиля -->
+    <div class="header-container">
+        <div class="app-title">GG Case</div>
+        <div class="balances-row">
+            <!-- Изначально балансы равны 0 -->
+            <div class="badge">⭐ <span id="user-stars">0</span></div>
+            <div class="badge badge-tickets">🎫 <span id="user-tickets">0</span></div>
+        </div>
+    </div>
+
+    <!-- Реферальная карточка по скриншоту -->
+    <div class="referral-card">
+        <div class="ref-title">Приглашай друзей и получай <span>10%</span> от их пополнений!</div>
+        <div class="ref-desc">А так же по 🎫 5 за каждого, но не более 30 в день</div>
+        
+        <!-- Нулевые счетчики приглашенных друзей на старте -->
+        <div class="counters-row">
+            <div class="counter-box">
+                <div class="counter-val" id="ref-count">0</div>
+                <div class="counter-label">Приглашено</div>
+            </div>
+            <div class="counter-box">
+                <div class="counter-val" id="ref-earned">0</div>
+                <div class="counter-label">Заработано</div>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <button class="btn-invite" onclick="shareRefLink()">Пригласить</button>
+            <button class="btn-copy" onclick="copyRefLink()">📋</button>
+        </div>
+    </div>
+
+    <!-- Ваши подарки (Инвентарь NFT) -->
+    <div class="inventory-section-title">Ваши подарки</div>
+    <div class="inventory-card">
+        <!-- Изначально пустая заглушка в точности по макету -->
+        <div class="empty-text">У вас ничего нет</div>
+        <button class="btn-add-gift" onclick="alert('Перенаправление на витрину кейсов...')">
+            <span style="font-size: 14px; font-weight: bold;">+</span> Добавить подарок
+        </button>
+    </div>
+
+    <!-- Наш нижний таббар (Игры, Задания, Профиль) -->
+    <div class="tab-bar">
+        <a href="index.html" class="tab-item"><span class="tab-icon">🎮</span>Игры</a>
+        <a href="tasks.html" class="tab-item"><span class="tab-icon">📋</span>Задания</a>
+        <a href="#" class="tab-item active"><span class="tab-icon">👤</span>Профиль</a>
+    </div>
+
+    <script>
+        function shareRefLink() {
+            alert("Ссылка отправлена в чат Telegram! Пригласите друга в GG Case.");
+        }
+
+        function copyRefLink() {
+            alert("Ваша уникальная реферальная ссылка успешно скопирована в буфер обмена!");
+        }
+    </script>
+</body>
+</html>
