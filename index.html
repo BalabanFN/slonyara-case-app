@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Slonyara Case</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-page-wrapper">
+        
+        <!-- БЛОК ШАПКИ -->
+        <div class="brand-header-section">
+            <div class="app-brand-meta">
+                <img src="images/logo.png" class="app-avatar-mini" alt="Logo" onerror="this.style.display='none'">
+                <div class="app-title">Slonyara Case</div>
+            </div>
+            
+            <div class="main-balance-row">
+                <div class="balance-badge">⭐ <span>0</span></div>
+                <a href="deposit.html" class="deposit-link-btn">Пополнить</a>
+            </div>
+        </div>
+
+        <!-- LIVE ЛЕНТА -->
+        <div class="live-ticker-container">
+            <div class="live-badge">LIVE</div>
+            <div class="live-ticker">
+                <div class="ticker-icon">👑</div><div class="ticker-icon">🧸</div>
+                <div class="ticker-icon">🎃</div><div class="ticker-icon">🌸</div>
+                <div class="ticker-icon">🍬</div><div class="ticker-icon">🧢</div>
+                <div class="ticker-icon">💎</div><div class="ticker-icon">💝</div>
+                <div class="ticker-icon">🔥</div><div class="ticker-icon">🚀</div>
+                <div class="ticker-icon">🛸</div><div class="ticker-icon">🍀</div>
+            </div>
+        </div>
+
+        <!-- ЦЕНТРАЛЬНЫЙ СТОЛБЕЦ РЕЖИМОВ -->
+        <div class="menu-list-container">
+            <div class="menu-list">
+                
+                <div class="menu-btn bg-free" onclick="openGameModal('Бесплатно')">
+                    <div class="btn-icon">🎁</div>
+                    <div class="btn-text">
+                        <div class="btn-title">Бесплатно</div>
+                        <div class="btn-subtitle">Ежедневные бонусы и билеты</div>
+                    </div>
+                </div>
+
+                <div class="menu-btn bg-cases" onclick="openGameModal('Кейсы')">
+                    <div class="btn-icon">⭐</div>
+                    <div class="btn-text">
+                        <div class="btn-title">Кейсы</div>
+                        <div class="btn-subtitle">Открывайте кейсы со Stars</div>
+                    </div>
+                </div>
+
+                <div class="menu-btn bg-upgrade" onclick="openGameModal('Апгрейд')">
+                    <div class="btn-icon">🔮</div>
+                    <div class="btn-text">
+                        <div class="btn-title">Апгрейд</div>
+                        <div class="btn-subtitle">Улучшите свои подарки до редких</div>
+                    </div>
+                </div>
+
+                <div class="menu-btn bg-crash" onclick="openGameModal('Краш')">
+                    <div class="btn-icon">🚀</div>
+                    <div class="btn-text">
+                        <div class="btn-title">Краш</div>
+                        <div class="btn-subtitle">Успейте забрать куш до взрыва раунда</div>
+                    </div>
+                </div>
+
+                <div class="menu-btn bg-mines" onclick="openGameModal('Мины')">
+                    <div class="btn-icon">💣</div>
+                    <div class="btn-text">
+                        <div class="btn-title">Мины</div>
+                        <div class="btn-subtitle">Ищите короны и обходите бомбы</div>
+                    </div>
+                </div>
+
+                <div class="menu-btn bg-plinko" onclick="openGameModal('Plinko')">
+                    <div class="btn-icon">🔘</div>
+                    <div class="btn-text">
+                        <div class="btn-title">Plinko</div>
+                        <div class="btn-subtitle">Запускайте шарики по колышкам пирамиды</div>
+                    </div>
+                </div>
+
+                <div class="menu-btn bg-contracts" onclick="openGameModal('Контракты')">
+                    <div class="btn-icon">📋</div>
+                    <div class="btn-text">
+                        <div class="btn-title">Контракты</div>
+                        <div class="btn-subtitle">Крафт супер-призов из 6 предметов</div>
+                    </div>
+                </div>
+
+                <div class="menu-btn bg-pvp" onclick="openGameModal('PvP Дуэли')">
+                    <div class="btn-icon">⚔️</div>
+                    <div class="btn-text">
+                        <div class="btn-title">PvP Дуэли</div>
+                        <div class="btn-subtitle">Онлайн битвы 3 игроков за общий банк</div>
+                    </div>
+                </div>
+
+                <div class="menu-btn bg-slots" onclick="openGameModal('Слоты')">
+                    <div class="btn-icon">🎰</div>
+                    <div class="btn-text">
+                        <div class="btn-title">Слоты</div>
+                        <div class="btn-subtitle">Испытайте удачу в игровом автомате</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ТОЧНАЯ КОПИЯ ОКНА «БЕСПЛАТНО» ИЗ МАКЕТА С КАРТОЧКАМИ КЕЙСОВ -->
+        <div class="modal-sheet-overlay" id="gameModalOverlay" onclick="closeGameModal()">
+            <div class="modal-sheet-content" onclick="event.stopPropagation()">
+                
+                <!-- Шапка модалки -->
+                <div class="modal-header-row">
+                    <div class="modal-game-title" id="modalTitle">Бесплатно</div>
+                    <div class="modal-close-cross" onclick="closeGameModal()">✕</div>
+                </div>
+                
+                <!-- Контент кейсов (показывается только для раздела Бесплатно) -->
+                <div class="modal-cases-grid" id="freeCasesBlock">
+                    
+                    <!-- Карточка 1: Daily -->
+                    <div class="case-item-card" onclick="alert('Открытие Daily кейса...')">
+                        <div class="case-image-placeholder">🎃👜</div>
+                        <div class="case-meta-row">
+                            <span class="case-name">Daily</span>
+                            <span class="case-price price-orange">⭐ 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 2: Tickets -->
+                    <div class="case-item-card" onclick="alert('Открытие Tickets кейса...')">
+                        <div class="case-image-placeholder">🧢🎫</div>
+                        <div class="case-meta-row">
+                            <span class="case-name">Tickets</span>
+                            <span class="case-price price-blue">🎫 10</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Заглушка описания для остальных режимов (Кейсы, Краш и т.д.) -->
+                <p class="modal-game-description" id="modalDescription" style="display: none;">Описание игрового процесса.</p>
+                
+            </div>
+        </div>
+
+        <!-- Фиксированный нижний таббар -->
+        <div class="tab-bar">
+            <a href="#" class="tab-item active"><span class="tab-icon">🎮</span>Игры</a>
+            <a href="tasks.html" class="tab-item tab-tasks-link">
+                <span class="tab-icon">📋</span>Задания
+                <span class="task-badge-count" id="global-task-badge">7</span>
+            </a>
+            <a href="profile.html" class="tab-item"><span class="tab-icon">👤</span>Профиль</a>
+        </div>
+
+    </div>
+
+    <script>
+        const liveItemsPool = ["👑", "🧸", "🎃", "🌸", "🍬", "🧢", "💎", "💝", "🔥", "🚀", "🛸", "🍀", "🍦", "🌟", "🐱", "🦊"];
+        const ticker = document.querySelector('.live-ticker');
+
+        function fillTickerOnStart() {
+            if (!ticker) return;
+            ticker.innerHTML = '';
+            for (let i = 0; i < 40; i++) {
+                const icon = document.createElement('div');
+                icon.className = 'ticker-icon';
+                icon.innerText = liveItemsPool[Math.floor(Math.random() * liveItemsPool.length)];
+                ticker.appendChild(icon);
+            }
+        }
+
+        function updateLiveTicker() {
+            if (!ticker) return;
+            const newIcon = document.createElement('div');
+            newIcon.className = 'ticker-icon';
+            newIcon.innerText = liveItemsPool[Math.floor(Math.random() * liveItemsPool.length)];
+            newIcon.style.opacity = '0';
+            newIcon.style.transform = 'scale(0.5)';
+            newIcon.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            ticker.prepend(newIcon);
+
+            setTimeout(function() {
+                newIcon.style.opacity = '1';
+                newIcon.style.transform = 'scale(1)';
+            }, 50);
+
+            const allIcons = ticker.querySelectorAll('.ticker-icon');
+            if (allIcons.length > 0) {
+                const lastIcon = allIcons[allIcons.length - 1];
+                lastIcon.style.transition = 'all 0.5s ease';
+                lastIcon.style.opacity = '0';
+                lastIcon.style.transform = 'scale(0.3)';
+                lastIcon.style.width = '0px';
+                lastIcon.style.marginLeft = '-28px';
+                setTimeout(function() { lastIcon.remove(); }, 500);
+            }
+        }
+
+        // БЕЗОПАСНАЯ И ЧИСТАЯ ЛОГИКА ОТКРЫТИЯ И ЗАКРЫТИЯ ОКНА
+        function openGameModal(title) {
+            document.getElementById('modalTitle').innerText = title;
+            const overlay = document.getElementById('gameModalOverlay');
+            const freeBlock = document.getElementById('freeCasesBlock');
+            const descText = document.getElementById('modalDescription');
+
+            if (title === 'Бесплатно') {
+                freeBlock.style.display = 'flex';
+                descText.style.display = 'none';
+            } else {
+                freeBlock.style.display = 'none';
+descText.style.display = 'block';
+descText.innerText = "Режим '" + title + "' успешно выбран! Перенос игровой логики Bottom Sheet.";
+}
+overlay.style.display = 'flex';
+setTimeout(() => { overlay.classList.add('active'); }, 10);
+}
+// Клик по крестику убирает окно БЕЗ подтверждений страницы
+function closeGameModal() {
+const overlay = document.getElementById('gameModalOverlay');
+if (!overlay) return;
+overlay.classList.remove('active');
+setTimeout(() => { overlay.style.display = 'none'; }, 200);
+}
+fillTickerOnStart();
+setInterval(updateLiveTicker, 1500);
