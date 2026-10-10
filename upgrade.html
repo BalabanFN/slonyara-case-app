@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slonyara Case - Апгрейд</title>
+    <style>
+        body {
+            background-color: #121318;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 15px;
+            padding-bottom: 120px;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .header-container {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .btn-back {
+            position: absolute;
+            right: 5px;
+            top: 0;
+            font-size: 18px;
+            color: #7a7c85;
+            text-decoration: none;
+        }
+
+        .title { font-size: 20px; font-weight: bold; margin: 0 0 8px 0; }
+        .subtitle { font-size: 13px; color: #7a7c85; margin: 0; }
+
+        .zone-card {
+            background-color: #212123;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .zone-title { font-size: 13px; color: #7a7c85; margin-bottom: 12px; }
+
+        .btn-add-slot {
+            width: 85px;
+            height: 85px;
+            border: 1.5px dashed #3a3b42;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #7a7c85;
+        }
+
+        .plus-icon {
+            font-size: 14px; background: #3a3b42; color: #212123;
+            width: 18px; height: 18px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; margin-bottom: 4px;
+        }
+        .slot-text { font-size: 11px; text-align: center; }
+
+        .selected-item-display { font-size: 40px; margin-bottom: 5px; }
+        .selected-item-name { font-size: 12px; color: #fff; font-weight: bold; }
+
+        .chance-container {
+            background-color: #212123;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chance-title {
+            font-size: 14px;
+            color: #7a7c85;
+            margin-bottom: 15px;
+        }
+
+        .horizontal-roulette {
+            width: 100%;
+            height: 24px;
+            background-color: #2d2d31;
+            border-radius: 12px;
+            position: relative;
+            overflow: visible;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+            margin-bottom: 25px;
+        }
+
+        .chance-fill-zone {
+            height: 100%;
+            width: 0%;
+            background-color: #4a4b54;
+            border-radius: 12px 0 0 12px;
+            transition: background-color 0.3s ease, width 0.3s ease;
+        }
+
+        .roulette-arrow {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid #ffffff;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .chance-percent-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-top: 5px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none; justify-content: center; align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background-color: #1b1c24;
+            width: 90%; max-width: 350px;
+            border-radius: 24px; padding: 20px;
+            box-sizing: border-box; position: relative;
+            border: 1px solid #292a34;
+        }
+
+        .modal-header { font-size: 16px; font-weight: bold; text-align: center; margin-bottom: 20px; }
+        .modal-close { position: absolute; top: 18px; right: 20px; color: #7a7c85; cursor: pointer; }
+
+        .empty-state {
+            background-color: #212123; border-radius: 16px;
+            padding: 30px 20px; text-align: center;
+        }
+        .empty-text { font-size: 13px; color: #7a7c85; margin-bottom: 15px; }
+        
+        .items-list {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+            max-height: 200px; overflow-y: auto;
+        }
+        .modal-item-btn {
+            background-color: #212123; border: 1px solid #292a34;
+            border-radius: 12px; padding: 10px; text-align: center; cursor: pointer;
+        }
+
+        .bottom-container {
+            position: fixed; bottom: 20px; left: 0; width: 100%;
+            display: flex; justify-content: center; padding: 0 15px; box-sizing: border-box;
+        }
+        .btn-main {
+            background-color: #246bfd; color: white; border: none;
+            border-radius: 14px; padding: 14px 0; font-size: 15px;
+            font-weight: bold; width: 100%; max-width: 360px; cursor: pointer;
+        }
+        .btn-main:disabled { background-color: #2b2c35; color: #55565f; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1 class="title">Апгрейд</h1>
+        <p class="subtitle">Преобразуйте свои подарки в более ценные!</p>
+        <a href="index.html" class="btn-back">✕</a>
+    </div>
+
+    <div class="zone-card">
+        <div class="zone-title">Ваши подарки</div>
+        <div id="slot-user" class="btn-add-slot" onclick="openInventory('user')">
+            <div class="plus-icon">+</div>
+            <div class="slot-text">Добавить еще</div>
+        </div>
+    </div>
+
+    <div class="zone-card">
+        <div class="zone-title">Желаемый подарок</div>
+        <div id="slot-target" class="btn-add-slot" onclick="openInventory('target')">
+            <div class="plus-icon">+</div>
+            <div class="slot-text">Добавить еще</div>
+        </div>
+    </div>
+
+    <div class="chance-container" id="chance-box">
+        <div class="chance-title">Шанс на апгрейд</div>
+        <div class="horizontal-roulette">
+            <div class="roulette-arrow" id="pointer"></div>
+            <div class="chance-fill-zone" id="fill-zone"></div>
+        </div>
+        <div class="chance-percent-text" id="chance-text">0%</div>
+    </div>
+
+    <div class="bottom-container">
+        <button class="btn-main" id="action-btn" disabled onclick="startUpgradeRoll()">Выбрать свой подарок</button>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-title">Выберите ставку</div>
+            <div class="modal-close" onclick="closeInventory()">✕</div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const userInventory = [
+            { id: 1, name: "Обычная Кепка", icon: "🧢", value: 10 },
+            { id: 2, name: "Дешевые Очки", icon: "👓", value: 20 }
+        ];
+
+        const poolInventory = [
+            { id: 101, name: "Золотая Корона", icon: "👑", value: 100 },
+            { id: 102, name: "Тыква Хэллоуин", icon: "🎃", value: 40 }
+        ];
+
+        let selectedUserItem = null;
+        let selectedTargetItem = null;
+        let currentChance = 0;
+        let isRolling = false;
+
+        function openInventory(type) {
+            if (isRolling) return;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+            modal.style.display = 'flex';
+
+            if (type === 'user') {
+                title.innerText = "Выберите ставку";
+                if (userInventory.length === 0) {
+                    body.innerHTML = '<div class="empty-state"><div class="empty-text">У вас ничего нет</div></div>';
+                } else {
+                    let html = '<div class="items-list">';
+                    userInventory.forEach(item => {
+                        html += `<div class="modal-item-btn" onclick="selectItem('user', ${item.id})"><span style="font-size:30px;">${item.icon}</span><div style="font-size:11px;margin-top:5px;">${item.name}</div></div>`;
+                    });
+                    html += '</div>';
+                    body.innerHTML = html;
+                }
+            } else {
+                title.innerText = "Выберите желаемый подарок";
+                let html = '<div class="items-list">';
+                poolInventory.forEach(item => {
+                    html += `<div class="modal-item-btn" onclick="selectItem('target', ${item.id})"><span style="font-size:30px;">${item.icon}</span><div style="font-size:11px;margin-top:5px;">${item.name}</div></div>`;
+                });
+                html += '</div>';
+                body.innerHTML = html;
+            }
+        }
+
+        function closeInventory() { document.getElementById('modal').style.display = 'none'; }
+
+        function selectItem(type, id) {
+            if (type === 'user') {
+                selectedUserItem = userInventory.find(i => i.id == id);
+                document.getElementById('slot-user').innerHTML = `<div class="selected-item-display">${selectedUserItem.icon}</div><div class="selected-item-name">${selectedUserItem.name}</div>`;
+            } else {
+                selectedTargetItem = poolInventory.find(i => i.id == id);
+                document.getElementById('slot-target').innerHTML = `<div class="selected-item-display">${selectedTargetItem.icon}</div><div class="selected-item-name">${selectedTargetItem.name}</div>`;
+            }
+            closeInventory();
+updateChanceBar();
+}
+function updateChanceBar() {
+if (selectedUserItem && selectedTargetItem) {
+currentChance = Math.floor((selectedUserItem.value / selectedTargetItem.value) * 100);
+if (currentChance > 75) currentChance = 75;
+if (currentChance < 5) currentChance = 5;
+document.getElementById('chance-text').innerText = currentChance + "%";
+const fillZone = document.getElementById('fill-zone');
+fillZone.style.backgroundColor = '#4a4b54';
+fillZone.style.width = currentChance + "%";
+document.getElementById('pointer').style.left = "50%";
+document.getElementById('chance-box').style.display = 'flex';
+const actionBtn = document.getElementById('action-btn');
+actionBtn.innerText = "Апгрейд";
+actionBtn.disabled = false;
+}
+}
+function startUpgradeRoll() {
+if (isRolling) return;
+isRolling = true;
+document.getElementById('action-btn').disabled = true;
+const pointer = document.getElementById('pointer');
+const fillZone = document.getElementById('fill-zone');
+const realWinningChance = currentChance * 0.85;
+const systemDice = Math.floor(Math.random() * 100) + 1;
+const isWin = systemDice <= realWinningChance;
+let finalPositionPercent = 0;
+if (isWin) {
+finalPositionPercent = Math.random() * (currentChance - 2) + 1;
+} else {
+finalPositionPercent = currentChance + Math.random() * (100 - currentChance - 2) + 1;
+}
+pointer.style.transition = "left 0.5s ease-in-out";
+pointer.style.left = "95%";
+setTimeout(() => {
+pointer.style.left = "5%";
+setTimeout(() => {
+pointer.style.transition = "left 2.5s cubic-bezier(0.15, 0.85, 0.45, 1)";
+pointer.style.left = finalPositionPercent + "%";
+}, 500);
+}, 500);
+setTimeout(() => {
+if (isWin) {
+fillZone.style.backgroundColor = '#4cd964';
+alert("🎉 Отлично! Апгрейд прошел успешно!");
+} else {
+fillZone.style.backgroundColor = '#ff3b30';
+alert("❌ Не повезло! Апгрейд сорвался.");
+}
+isRolling = false;
+document.getElementById('action-btn').disabled = false;
+}, 3600);
+}

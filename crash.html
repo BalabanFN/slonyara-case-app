@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Slonyara Case - Краш</title>
+    <style>
+        body {
+            background-color: #0b0c10;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* Мобильный контейнер */
+        .app-container {
+            width: 100%;
+            max-width: 360px;
+            min-height: 100vh;
+            background-color: #121318;
+            box-sizing: border-box;
+            padding: 15px 15px 110px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Шапка страницы */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+            background: #1b1c24;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border: 1px solid #292a34;
+            box-sizing: border-box;
+        }
+        .btn-back { color: #7a7c85; text-decoration: none; font-size: 15px; font-weight: bold; }
+        .stars-badge { background: none; font-weight: 800; font-size: 15px; color: #ffaa00; }
+
+        /* График Краша */
+        .crash-card {
+            background-color: #1b1c24;
+            border-radius: 24px;
+            padding: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #292a34;
+            margin-bottom: 15px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        canvas {
+            width: 100%;
+            height: 220px;
+            display: block;
+            background: #121318;
+            border-radius: 16px;
+        }
+
+        .multiplier-display {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 46px;
+            font-weight: 900;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            color: #ffffff;
+            z-index: 10;
+        }
+        .multiplier-display.crashed { color: #ff3b30; }
+
+        /* Блок управления ставкой */
+        .bet-controls-card {
+            background-color: #1b1c24;
+            border-radius: 24px;
+            padding: 15px;
+            border: 1px solid #292a34;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .bet-input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .bet-display-box {
+            background: #121318;
+            padding: 10px 16px;
+            border-radius: 14px;
+            font-weight: bold;
+            font-size: 16px;
+            min-width: 90px;
+            text-align: left;
+            border: 1px solid #292a34;
+        }
+
+        .quick-buttons { display: flex; gap: 8px; }
+        .btn-quick {
+            background: #212123;
+            border: 1px solid #292a34;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-action {
+            background-color: #246bfd;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 15px 0;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(36, 107, 253, 0.4);
+        }
+        .btn-action:disabled { background-color: #2b2c35; color: #55565f; cursor: not-allowed; box-shadow: none; }
+        .btn-action.insufficient { background-color: #ff3b30 !important; box-shadow: none; }
+        .btn-action.cashout { background-color: #4cd964 !important; color: #000000; box-shadow: 0 4px 15px rgba(76, 217, 100, 0.4); }
+
+        /* Нижний фиксированный таббар */
+        .tab-bar {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 360px; background-color: #111216;
+            border-top: 1px solid #23242c; display: flex; justify-content: space-around;
+            padding: 10px 0 14px 0; z-index: 100; border-radius: 20px 20px 0 0;
+        }
+        .tab-item {
+            color: #525464; font-size: 11px; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; width: 33.33%;
+        }
+        .tab-icon { font-size: 20px; }
+        .tab-item.active { color: #246bfd; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header-container">
+            <a href="index.html" class="btn-back">← Назад</a>
+            <div class="stars-badge">⭐ <span id="user-balance">0</span></div>
+        </div>
+
+        <div class="crash-card">
+            <div class="multiplier-display" id="mult-text">x1.00</div>
+            <canvas id="crashCanvas"></canvas>
+        </div>
+
+        <div class="bet-controls-card">
+            <div class="bet-input-row">
+                <div class="bet-display-box">⭐ <span id="bet-amount-text">0</span></div>
+                <div class="quick-buttons">
+                    <button class="btn-quick" onclick="addBet(100)">+ 100</button>
+                    <button class="btn-quick" onclick="addBet(500)">+ 500</button>
+                    <button class="btn-quick" onclick="resetBet()">Сброс</button>
+                </div>
+            </div>
+            <button class="btn-action" id="action-btn" onclick="handleButtonClick()">Отправить</button>
+        </div>
+
+        <div class="tab-bar">
+            <a href="index.html" class="tab-item active"><span class="tab-icon">🎮</span>Игры</a>
+            <a href="tasks.html" class="tab-item"><span class="tab-icon">📋</span>Задания</a>
+            <a href="profile.html" class="tab-item"><span class="tab-icon">👤</span>Профиль</a>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('crashCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 330;
+        canvas.height = 220;
+
+        let userBalance = 0; 
+        let currentBet = 0;
+        let gameState = "waiting"; 
+        
+        let currentMultiplier = 1.00;
+        let crashPoint = 1.00;
+        let animationFrameId;
+        let startTime;
+
+        function addBet(amount) {
+            if (gameState === "running") return;
+            currentBet += amount;
+            document.getElementById('bet-amount-text').innerText = currentBet;
+            checkBalance();
+        }
+
+        function resetBet() {
+            if (gameState === "running") return;
+            currentBet = 0;
+            document.getElementById('bet-amount-text').innerText = 0;
+            checkBalance();
+        }
+
+        function checkBalance() {
+            const btn = document.getElementById('action-btn');
+            if (gameState !== "waiting") return;
+
+            if (currentBet > userBalance) {
+                btn.innerText = "Недостаточно звезд";
+                btn.classList.add('insufficient');
+                btn.disabled = true;
+            } else {
+                btn.innerText = "Отправить";
+                btn.classList.remove('insufficient');
+                btn.disabled = false;
+            }
+        }
+
+        function drawGraph(elapsedTime) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = "rgba(36, 107, 253, 0.05)";
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 30) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += 30) {
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+
+            if (gameState === "running") {
+                ctx.beginPath();
+                ctx.strokeStyle = "#246bfd";
+                ctx.lineWidth = 4;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = "#246bfd";
+                ctx.moveTo(20, canvas.height - 20);
+
+                let steps = elapsedTime / 16;
+                let lastX = 20;
+                let lastY = canvas.height - 20;
+
+                for (let i = 0; i <= steps; i++) {
+                    let x = 20 + (canvas.width - 50) * (i / steps);
+                    let y = (canvas.height - 20) - Math.pow(i, 1.8) * 0.05;
+                    
+                    if (y < 30) y = 30;
+                    if (x > canvas.width - 30) x = canvas.width - 30;
+
+                    ctx.lineTo(x, y);
+                    lastX = x;
+                    lastY = y;
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = "#ffaa00";
+                ctx.beginPath();
+                ctx.arc(lastX, lastY, 6, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.fillStyle = "rgba(255,255,255,0.1)";
+                ctx.beginPath(); ctx.arc(20, canvas.height - 20, 4, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        function handleButtonClick() {
+            if (gameState === "waiting") {
+                if (currentBet === 0) { alert("Установите сумму ставки!"); return; }
+                
+                userBalance -= currentBet;
+                document.getElementById('user-balance').innerText = userBalance;
+
+                let dice = Math.random();
+                if (dice < 0.10) {
+                    crashPoint = 1.00;
+} else {
+crashPoint = (1.01 + Math.pow(Math.random(), 3) * 15).toFixed(2);
+}
+gameState = "running";
+currentMultiplier = 1.00;
+startTime = Date.now();
+const btn = document.getElementById('action-btn');
+btn.innerText = "Забрать";
+btn.classList.add('cashout');
+document.getElementById('mult-text').className = "multiplier-display";
+animateCrash();
+} else if (gameState === "running") {
+let winAmount = Math.floor(currentBet * currentMultiplier);
+userBalance += winAmount;
+document.getElementById('user-balance').innerText = userBalance;
+alert('🎉 Успешно! Вы выиграли: ⭐ ' + winAmount);
+cancelAnimationFrame(animationFrameId);
+finishRound(false);
+}
+}
+function animateCrash() {
+let elapsed = Date.now() - startTime;
+currentMultiplier = 1.00 + Math.pow(elapsed / 3000, 1.5);
+if (currentMultiplier >= crashPoint) {
+currentMultiplier = parseFloat(crashPoint);
+document.getElementById('mult-text').innerText = '💥 x' + currentMultiplier.toFixed(2);
+document.getElementById('mult-text').classList.add('crashed');
+finishRound(true);
+} else {
+document.getElementById('mult-text').innerText = 'x' + currentMultiplier.toFixed(2);
+drawGraph(elapsed);
+animationFrameId = requestAnimationFrame(animateCrash);
+}
+}
+function finishRound(isCrashed) {
+gameState = "waiting";
+if (isCrashed) {
+alert('💥 Взрыв на x' + currentMultiplier.toFixed(2));
+}
+const btn = document.getElementById('action-btn');
+btn.innerText = "Отправить";
+btn.classList.remove('cashout');
+currentBet = 0;
+document.getElementById('bet-amount-text').innerText = 0;
+checkBalance();
+}
+drawGraph(0);
+checkBalance();

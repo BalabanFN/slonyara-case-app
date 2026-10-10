@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slonyara Case</title>
+    <style>
+        body {
+            background-color: #1a1b22;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 15px;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            text-align: center;
+        }
+
+        /* Шапка страницы */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .btn-back { color: #7a7c85; text-decoration: none; font-size: 16px; font-weight: 500; }
+        .stars-badge { background: #252631; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; border: 1px solid #292a34; }
+
+        /* Игровое поле Plinko */
+        .game-container {
+            background: linear-gradient(180deg, #2d2d35 0%, #121318 100%);
+            border-radius: 24px;
+            padding: 15px 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            max-width: 360px;
+            margin: 0 auto 15px auto;
+            position: relative;
+        }
+        canvas { width: 100%; height: 320px; display: block; background: transparent; }
+
+        /* Ряд плашек с коэффициентами */
+        .multipliers-row {
+            display: flex;
+            gap: 2px;
+            justify-content: center;
+            margin-top: 5px;
+            padding: 0 2px;
+        }
+        .mult-bucket {
+            flex: 1;
+            font-size: 9px;
+            font-weight: bold;
+            padding: 6px 0;
+            border-radius: 5px;
+            text-align: center;
+            color: #ffffff;
+            transition: transform 0.1s;
+        }
+
+        /* Расцветка плашек под дизайн */
+        .bg-red { background-color: #ff3b30; box-shadow: 0 0 6px rgba(255,59,48,0.3); }
+        .bg-orange { background-color: #ffaa00; color: #000; }
+        .bg-lightgreen { background-color: #4cd964; color: #000; }
+        .bg-green { background-color: #24b353; color: #fff; }
+        .bg-center { background-color: #55565f; }
+
+        /* Панель управления (История + Риск) */
+        .controls-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            max-width: 340px;
+            margin: 0 auto 20px auto;
+        }
+
+        /* Кнопка вызова истории */
+        .btn-history-trigger {
+            background-color: #252631;
+            border: 1px solid #292a34;
+            color: #ffffff;
+            border-radius: 12px;
+            width: 42px;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Переключатель рисков */
+        .risk-selector {
+            display: flex;
+            background-color: #252631;
+            border-radius: 12px;
+            padding: 4px;
+            flex-grow: 1;
+            border: 1px solid #292a34;
+            height: 38px;
+            box-sizing: border-box;
+        }
+        .risk-btn {
+            flex: 1; background: none; border: none; color: #7a7c85;
+            padding: 8px 0; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 8px;
+        }
+        .risk-btn.active { background-color: #121318; color: #ffffff; }
+
+        /* Блок управления ставкой */
+        .bet-controls-card {
+            background-color: #212123;
+            border-radius: 20px;
+            padding: 15px;
+            border: 1px solid #292a34;
+            max-width: 360px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        .bet-input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .bet-display-box {
+            background: #121318; padding: 8px 16px; border-radius: 12px; font-weight: bold; min-width: 80px; text-align: left;
+        }
+        .quick-buttons { display: flex; gap: 8px; }
+        .btn-quick {
+            background: #252631; border: 1px solid #292a34; color: #fff;
+            padding: 8px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer;
+        }
+
+        .btn-submit {
+            background-color: #246bfd; color: white; border: none;
+            border-radius: 16px; padding: 15px 0; font-size: 16px;
+            font-weight: bold; width: 100%; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(36, 107, 253, 0.4);
+        }
+        .btn-submit:disabled { background-color: #2b2c35; color: #55565f; cursor: not-allowed; box-shadow: none; }
+        .btn-submit.insufficient { background-color: #ff3b30 !important; }
+
+        /* МОДАЛЬНОЕ ОКНО ИСТОРИИ ИГР */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(18, 19, 24, 0.95);
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 200;
+        }
+        .modal-header { display: flex; flex-direction: column; align-items: center; position: relative; margin-bottom: 30px; }
+        .modal-title { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
+        .modal-subtitle { font-size: 13px; color: #7a7c85; }
+        .modal-close { position: absolute; right: 10px; top: 5px; font-size: 20px; color: #7a7c85; cursor: pointer; }
+
+        .empty-history-card {
+            background-color: #212123; border-radius: 20px; padding: 30px 20px; text-align: center;
+            max-width: 340px; width: 100%; margin: auto auto; border: 1px solid #292a34; box-sizing: border-box;
+        }
+        .empty-title { font-size: 16px; font-weight: bold; margin-bottom: 6px; }
+        .empty-desc { font-size: 13px; color: #7a7c85; }
+
+        .history-list { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 340px; margin: 0 auto; overflow-y: auto; }
+        .history-row {
+            background-color: #212123; border-radius: 12px; padding: 12px 15px; display: flex;
+            justify-content: space-between; align-items: center; font-size: 14px; border: 1px solid #292a34;
+        }
+        .win-green { color: #4cd964; font-weight: bold; }
+        .win-gray { color: #7a7c85; }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <a href="index.html" class="btn-back">← Назад</a>
+        <div class="stars-badge">⭐ <span id="user-balance">0</span></div>
+    </div>
+
+    <div class="game-container">
+        <canvas id="plinkoCanvas"></canvas>
+        <div class="multipliers-row" id="buckets-container"></div>
+    </div>
+
+    <div class="controls-row">
+        <div class="btn-history-trigger" onclick="openHistoryModal()">🕒</div>
+        
+        <div class="risk-selector">
+            <button class="risk-btn" onclick="setRisk('easy', this)">Легко</button>
+            <button class="risk-btn active" onclick="setRisk('medium', this)">Средне</button>
+            <button class="risk-btn" onclick="setRisk('hard', this)">Сложно</button>
+        </div>
+    </div>
+
+    <div class="bet-controls-card">
+        <div class="bet-input-row">
+            <div class="bet-display-box">⭐ <span id="bet-amount-text">0</span></div>
+            <div class="quick-buttons">
+                <button class="btn-quick" onclick="addBet(100)">+ 100</button>
+                <button class="btn-quick" onclick="addBet(500)">+ 500</button>
+                <button class="btn-quick" onclick="resetBet()">Сброс</button>
+            </div>
+        </div>
+        <button class="btn-submit" id="submit-btn" onclick="dropBall()">Отправить</button>
+    </div>
+
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-header">
+            <div class="modal-title">История игр</div>
+            <div class="modal-subtitle">Последние результаты шаров</div>
+            <div class="modal-close" onclick="closeHistoryModal()">✕</div>
+        </div>
+        <div id="history-content" style="display: flex; flex-direction: column; flex-grow: 1; width: 100%;"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('plinkoCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 340;
+        canvas.height = 300;
+
+        let userBalance = 0; 
+        let currentBet = 0;
+        let currentRisk = 'medium'; 
+        let activeBalls = [];
+        let plinkoHistoryLog = [];
+
+        const bucketSchemes = {
+            easy: [
+                {x: 5.2, c: 'bg-red'}, {x: 1.6, c: 'bg-orange'}, {x: 1.2, c: 'bg-lightgreen'}, 
+                {x: 1.0, c: 'bg-green'}, {x: 0.4, c: 'bg-center'}, {x: 1.0, c: 'bg-green'}, 
+                {x: 1.2, c: 'bg-lightgreen'}, {x: 1.6, c: 'bg-orange'}, {x: 5.2, c: 'bg-red'}
+            ],
+            medium: [
+                {x: 9.2, c: 'bg-red'}, {x: 3.2, c: 'bg-orange'}, {x: 1.6, c: 'bg-lightgreen'}, 
+                {x: 1.2, c: 'bg-green'}, {x: 0.6, c: 'bg-center'}, {x: 0.4, c: 'bg-center'}, {x: 0.6, c: 'bg-center'},
+                {x: 1.2, c: 'bg-green'}, {x: 1.6, c: 'bg-lightgreen'}, {x: 3.2, c: 'bg-orange'}, {x: 9.2, c: 'bg-red'}
+            ],
+            hard: [
+                {x: 99.0, c: 'bg-red'}, {x: 33.0, c: 'bg-red'}, {x: 12.0, c: 'bg-orange'}, {x: 6.6, c: 'bg-orange'},
+                {x: 3.8, c: 'bg-lightgreen'}, {x: 1.5, c: 'bg-green'}, {x: 0.6, c: 'bg-center'}, {x: 0.2, c: 'bg-center'}, 
+                {x: 0.4, c: 'bg-center'}, {x: 0.6, c: 'bg-center'}, {x: 1.5, c: 'bg-green'}, {x: 3.8, c: 'bg-lightgreen'}, 
+                {x: 6.6, c: 'bg-orange'}, {x: 12.0, c: 'bg-orange'}, {x: 33.0, c: 'bg-red'}, {x: 99.0, c: 'bg-red'}
+]
+};
+let pegs = [];
+function generatePegs() {
+pegs = [];
+let rows = currentRisk === 'easy' ? 8 : (currentRisk === 'medium' ? 10 : 13);
+let spacingY = 240 / rows;
+let spacingX = currentRisk === 'hard' ? 20 : 24;
+for (let i = 0; i < rows; i++) {
+let count = 3 + i;
+let rowWidth = (count - 1) * spacingX;
+let startX = (canvas.width - rowWidth) / 2;
+for (let j = 0; j < count; j++) {
+pegs.push({ x: startX + (j * spacingX), y: 30 + (i * spacingY) });
+}
+}
+}
+function renderBuckets() {
+const container = document.getElementById('buckets-container');
+container.innerHTML = '';
+bucketSchemes[currentRisk].forEach((b, index) => {
+container.innerHTML += '' + b.x + '';
+});
+}
+function setRisk(risk, btn) {
+if (activeBalls.length > 0) return;
+currentRisk = risk;
+document.querySelectorAll('.risk-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+generatePegs();
+renderBuckets();
+}
+function addBet(amount) { currentBet += amount; document.getElementById('bet-amount-text').innerText = currentBet; checkBalance(); }
+function resetBet() { currentBet = 0; document.getElementById('bet-amount-text').innerText = 0; checkBalance(); }
+function checkBalance() {
+const btn = document.getElementById('submit-btn');
+if (currentBet > userBalance) {
+btn.innerText = "Недостаточно звезд";
+btn.classList.add('insufficient');
+btn.disabled = true;
+} else {
+btn.innerText = "Отправить";
+btn.classList.remove('insufficient');
+btn.disabled = false;
+}
+}
+function dropBall() {
+if (currentBet === 0) { alert("Установите сумму ставки!"); return; }
+userBalance -= currentBet;
+document.getElementById('user-balance').innerText = userBalance;
+checkBalance();
+activeBalls.push({
+x: canvas.width / 2 + (Math.random() * 4 - 2),
+y: 10, vx: 0, vy: 2, radius: 5.5, betValue: currentBet
+});
+}
+function updatePhysics() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = '#ffffff';
+pegs.forEach(peg => { ctx.beginPath(); ctx.arc(peg.x, peg.y, 3, 0, Math.PI * 2); ctx.fill(); });
+for (let i = activeBalls.length - 1; i >= 0; i--) {
+let ball = activeBalls[i];
+ball.vy += 0.16;
+ball.x += ball.vx;
+ball.y += ball.vy;
+ball.vx *= 0.98;
+pegs.forEach(peg => {
+let dx = ball.x - peg.x;
+let dy = ball.y - peg.y;
+let dist = Math.sqrt(dx * dx + dy * dy);
+if (dist < ball.radius + 3) {
+ball.y = peg.y - 3.5;
+ball.vy = 1.1;
+let direction = Math.random() > 0.5 ? 1 : -1;
+if (Math.abs(ball.x - canvas.width/2) > 50 && Math.random() < 0.6) {
+direction = ball.x > canvas.width/2 ? -1 : 1;
+}
+ball.vx = direction * (1.2 + Math.random() * 0.7);
+}
+});
+if (ball.x < 12) { ball.x = 12; ball.vx *= -0.4; }
+if (ball.x > canvas.width - 12) { ball.x = canvas.width - 12; ball.vx *= -0.4; }
+ctx.fillStyle = '#ff2d55';
+ctx.shadowBlur = 6; ctx.shadowColor = '#ff2d55';
+ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2); ctx.fill();
+ctx.shadowBlur = 0;
+if (ball.y >= canvas.height - 10) {
+let totalBuckets = bucketSchemes[currentRisk].length;
+let bucketIndex = Math.floor(ball.x / (canvas.width / totalBuckets));
+if (bucketIndex < 0) bucketIndex = 0;
+if (bucketIndex > totalBuckets - 1) bucketIndex = totalBuckets - 1;
+let scheme = bucketSchemes[currentRisk][bucketIndex];
+let winAmount = Math.floor(ball.betValue * scheme.x);
+userBalance += winAmount;
+document.getElementById('user-balance').innerText = userBalance;
+let riskName = currentRisk === 'easy' ? 'Легко' : (currentRisk === 'medium' ? 'Средне' : 'Сложно');
+plinkoHistoryLog.unshift({
+risk: riskName,
+payout: 'x' + scheme.x,
+isWin: scheme.x >= 1.0
+});
+let bEl = document.getElementById('bucket-' + bucketIndex);
+if(bEl) { bEl.style.transform = 'scale(1.25)'; setTimeout(function() { bEl.style.transform = 'scale(1)'; }, 150); }
+activeBalls.splice(i, 1);
+checkBalance();
+}
+}
+requestAnimationFrame(updatePhysics);
+}
+function openHistoryModal() {
+const modal = document.getElementById('historyModal');
+const box = document.getElementById('history-content');
+modal.style.display = 'flex';
+if (plinkoHistoryLog.length === 0) {
+box.innerHTML = 'Ничего нетВы еще не играли';
+} else {
+            let html = '<div class="history-list">';
+            plinkoHistoryLog.forEach(function(item) {
+                let resClass = item.isWin ? "win-green" : "win-gray";
+                html += '<div class="history-row"><div style="text-align:left;"><span style="font-weight:bold;">Режим ' + item.risk + '</span><br><span style="font-size:11px; color:#7a7c85;">GG Case Plinko</span></div><div class="' + resClass + '">' + item.payout + '</div></div>';
+            });
+            html += '</div>';
+box.innerHTML = html;
+}
+}
+function closeHistoryModal() { document.getElementById('historyModal').style.display = 'none'; }
+generatePegs();
+renderBuckets();
+updatePhysics();
+checkBalance();

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Slonyara Case</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Верхняя LIVE лента во всю ширину экрана компьютера -->
+    <div class="live-ticker-container">
+        <div class="live-badge">LIVE</div>
+        <div class="live-ticker">
+            <div class="ticker-icon">👑</div><div class="ticker-icon">🧸</div>
+            <div class="ticker-icon">🎃</div><div class="ticker-icon">🌸</div>
+            <div class="ticker-icon">🍬</div><div class="ticker-icon">🧢</div>
+            <div class="ticker-icon">💎</div><div class="ticker-icon">💝</div>
+            <div class="ticker-icon">🦊</div><div class="ticker-icon">🐱</div>
+            <div class="ticker-icon">🚗</div><div class="ticker-icon">🌟</div>
+            <div class="ticker-icon">🍦</div><div class="ticker-icon">🦄</div>
+        </div>
+    </div>
+
+    <!-- Основной центральный контейнер приложения -->
+    <div class="app-container">
+        
+        <!-- Шапка: Название на самом верху, баланс ниже -->
+        <div class="header-container">
+            <div class="app-title">Slonyara Case</div>
+            <div class="balance-row">
+                <div class="balance-badge">⭐ <span>0</span></div>
+                <a href="deposit.html"><button class="btn-deposit">Пополнить</button></a>
+            </div>
+        </div>
+
+        <!-- Ровно 9 игровых режимов в один плотный вертикальный столб -->
+        <div class="menu-list">
+            
+            <!-- 1. Бесплатно -->
+            <a href="free.html" class="menu-btn bg-free">
+                <div class="btn-icon">🎁</div>
+                <div class="btn-text">
+                    <div class="btn-title">Бесплатно</div>
+                    <div class="btn-subtitle">Ежедневные бонусы и билеты</div>
+                </div>
+            </a>
+
+            <!-- 2. Кейсы -->
+            <a href="cases.html" class="menu-btn bg-cases">
+                <div class="btn-icon">⭐</div>
+                <div class="btn-text">
+                    <div class="btn-title">Кейсы</div>
+                    <div class="btn-subtitle">Открывайте кейсы со Stars</div>
+                </div>
+            </a>
+
+            <!-- 3. Апгрейд -->
+            <a href="upgrade.html" class="menu-btn bg-upgrade">
+                <div class="btn-icon">🔮</div>
+                <div class="btn-text">
+                    <div class="btn-title">Апгрейд</div>
+                    <div class="btn-subtitle">Улучшите свои подарки до редких</div>
+                </div>
+            </a>
+
+            <!-- 4. {Удалено} -> Краш -->
+            <a href="crash.html" class="menu-btn bg-crash">
+                <div class="btn-icon">🚀</div>
+                <div class="btn-text">
+                    <div class="btn-title">Краш</div>
+                    <div class="btn-subtitle">Успейте забрать куш до взрыва раунда</div>
+                </div>
+            </a>
+
+            <!-- 5. Мины -->
+            <a href="mines.html" class="menu-btn bg-mines">
+                <div class="btn-icon">💣</div>
+                <div class="btn-text">
+                    <div class="btn-title">Мины</div>
+                    <div class="btn-subtitle">Ищите короны и обходите бомбы</div>
+                </div>
+            </a>
+
+            <!-- 6. Plinko -->
+            <a href="plinko.html" class="menu-btn bg-plinko">
+                <div class="btn-icon">🔘</div>
+                <div class="btn-text">
+                    <div class="btn-title">Plinko</div>
+                    <div class="btn-subtitle">Запускайте шарики по колышкам пирамиды</div>
+                </div>
+            </a>
+
+            <!-- 7. Контракты -->
+            <a href="contracts.html" class="menu-btn bg-contracts">
+                <div class="btn-icon">📋</div>
+                <div class="btn-text">
+                    <div class="btn-title">Контракты</div>
+                    <div class="btn-subtitle">Крафт супер-призов из 6 предметов</div>
+                </div>
+            </a>
+
+            <!-- 8. PvP -->
+            <a href="pvp.html" class="menu-btn bg-pvp">
+                <div class="btn-icon">⚔️</div>
+                <div class="btn-text">
+                    <div class="btn-title">PvP Дуэли</div>
+                    <div class="btn-subtitle">Онлайн битвы 3 игроков за общий банк</div>
+                </div>
+            </a>
+
+            <!-- 9. Слоты -->
+            <a href="slots.html" class="menu-btn bg-slots">
+                <div class="btn-icon">🎰</div>
+                <div class="btn-text">
+                    <div class="btn-title">Слоты</div>
+                    <div class="btn-subtitle">Испытайте удачу в игровом автомате</div>
+                </div>
+            </a>
+
+        </div>
+
+               <!-- Фиксированный нижний таббар навигации -->
+        <div class="tab-bar">
+            <a href="#" class="tab-item active"><span class="tab-icon">🎮</span>Игры</a>
+            
+            <!-- Вкладка Задания с красным индикатором доступных квестов -->
+            <a href="tasks.html" class="tab-item tab-tasks-link">
+                <span class="tab-icon">📋</span>
+                Задания
+                <span class="task-badge-count">4</span>
+            </a>
+            
+            <a href="profile.html" class="tab-item"><span class="tab-icon">👤</span>Профиль</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

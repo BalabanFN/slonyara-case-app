@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slonyara Case - Контракты</title>
+    <style>
+        body {
+            background-color: #1a1b22;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 15px;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            text-align: center;
+        }
+
+        /* Шапка страницы */
+        .header-container {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .btn-back { position: absolute; right: 5px; top: 0; font-size: 18px; color: #7a7c85; text-decoration: none; }
+        .title { font-size: 22px; font-weight: bold; margin: 0 0 4px 0; }
+        .subtitle { font-size: 13px; color: #7a7c85; margin: 0; }
+
+        /* Переключатель типов контрактов под макет */
+        .contract-selector {
+            display: flex;
+            background-color: #252631;
+            border-radius: 14px;
+            padding: 4px;
+            max-width: 340px;
+            margin: 0 auto 20px auto;
+            border: 1px solid #292a34;
+        }
+        .contract-btn {
+            flex: 1; background: none; border: none; color: #7a7c85;
+            padding: 8px 0; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+        }
+        .contract-btn span { font-size: 10px; font-weight: normal; opacity: 0.7; }
+        .contract-btn.active { background-color: #246bfd; color: #ffffff; }
+
+        /* Большая карточка сетки */
+        .grid-card {
+            background-color: #212123;
+            border-radius: 24px;
+            padding: 20px 15px;
+            max-width: 340px;
+            margin: 0 auto 20px auto;
+            border: 1px solid #292a34;
+            box-sizing: border-box;
+        }
+        .grid-title { font-size: 14px; color: #7a7c85; margin-bottom: 15px; font-weight: 500; }
+
+        /* Сетка слотов 3х3 по скриншоту */
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .slot-item {
+            background-color: #1a1b22;
+            border: 1.5px dashed #3a3b42;
+            border-radius: 16px;
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: #7a7c85;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .slot-item.selected {
+            border-style: solid;
+            border-color: #246bfd;
+            background-color: #252631;
+            color: #ffffff;
+            font-size: 32px;
+        }
+
+        /* Текст инфо */
+        .info-text { font-size: 12px; color: #55565f; margin-bottom: 10px; }
+
+        /* Фиксированная нижняя синяя кнопка */
+        .bottom-container {
+            position: fixed; bottom: 20px; left: 0; width: 100%;
+            display: flex; justify-content: center; padding: 0 15px; box-sizing: border-box;
+            z-index: 10;
+        }
+        .btn-submit {
+            background-color: #246bfd; color: white; border: none;
+            border-radius: 16px; padding: 15px 0; font-size: 16px;
+            font-weight: bold; width: 100%; max-width: 340px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(36, 107, 253, 0.4);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-submit:disabled { background-color: #2b2c35; color: #55565f; cursor: not-allowed; box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка контрактов -->
+    <div class="header-container">
+        <h1 class="title">Контракты</h1>
+        <p class="subtitle">Объедините несколько подарков в один</p>
+        <a href="index.html" class="btn-back">✕</a>
+    </div>
+
+    <!-- Выбор типа контракта из макета -->
+    <div class="contract-selector">
+        <button class="contract-btn active" onclick="setMode('start', this)">Старт<span>до x2</span></button>
+        <button class="contract-btn" onclick="setMode('balance', this)">Баланс<span>до x8</span></button>
+        <button class="contract-btn" onclick="setMode('risk', this)">Риск<span>до x20</span></button>
+    </div>
+
+    <!-- Основная сетка 3х3 -->
+    <div class="grid-card">
+        <div class="grid-title">Ваши подарки</div>
+        <div class="slots-grid" id="slots-container">
+            <!-- 9 слотов генерируются через JS -->
+        </div>
+    </div>
+
+    <div class="info-text" id="status-text">Выберите минимум 6 подарков для контракта (0/6)</div>
+
+    <!-- Нижняя кнопка -->
+    <div class="bottom-container">
+        <button class="btn-submit" id="action-btn" disabled onclick="signContract()">Выбрать подарки</button>
+    </div>
+
+    <script>
+        let currentMode = 'start';
+        let selectedCount = 0;
+        const totalSlots = 9;
+        
+        // Эмулируем инвентарь игрока (дешевые предметы)
+        const mockGifts = ["🌸", "🎈", "🍬", "🍀", "🔑", "🎲", "🧩", "🎸", "💎"];
+        let slotsState = Array(totalSlots).fill(null);
+
+        function initGrid() {
+            const container = document.getElementById('slots-container');
+            container.innerHTML = '';
+            for (let i = 0; i < totalSlots; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'slot-item';
+                slot.innerText = '+';
+                slot.onclick = () => toggleSlot(i, slot);
+                container.appendChild(slot);
+            }
+        }
+
+        function setMode(mode, btn) {
+            currentMode = mode;
+            document.querySelectorAll('.contract-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function toggleSlot(index, element) {
+            if (slotsState[index] === null) {
+                // Добавляем предмет в слот
+                slotsState[index] = mockGifts[index];
+                element.className = 'slot-item selected';
+                element.innerText = slotsState[index];
+                selectedCount++;
+            } else {
+                // Очищаем слот
+                slotsState[index] = null;
+                element.className = 'slot-item';
+                element.innerText = '+';
+                selectedCount--;
+            }
+            updateButtonState();
+        }
+
+        function updateButtonState() {
+            const btn = document.getElementById('action-btn');
+            const statusText = document.getElementById('status-text');
+            
+            statusText.innerText = `Выберите минимум 6 подарков для контракта (${selectedCount}/6)`;
+
+            if (selectedCount >= 6) {
+                btn.disabled = false;
+                btn.innerText = "Заключить контракт";
+            } else {
+                btn.disabled = true;
+                btn.innerText = "Выбрать подарки";
+            }
+        }
+
+        function signContract() {
+            if (selectedCount < 6) return;
+
+            // Вероятность выигрыша по канонам казино (65% успеха на Старт, 40% на Баланс, 15% на Риск)
+            let winChance = currentMode === 'start' ? 0.65 : (currentMode === 'balance' ? 0.40 : 0.15);
+            let isWin = Math.random() < winChance;
+
+            if (isWin) {
+                // Супер-призы в зависимости от множителя режима
+                let prizes = currentMode === 'start' ? ["👑 Корона", "🦁 Лев"] : (currentMode === 'balance' ? ["🚀 Ракета TON", "🔥 Огненная Горилла"] : ["💎 Мега NFT GG Case", "🛸 Звездный лорд"]);
+                let finalPrize = prizes[Math.floor(Math.random() * prizes.length)];
+                alert(`🎉 Успех! Контракт выполнен! Вы получили дорогой подарок: ${finalPrize}`);
+            } else {
+                alert("❌ Контракт сорвался! Ваши подарки сгорели. Попробуйте еще раз!");
+            }
+
+            // Сброс сетки после игры
+            selectedCount = 0;
+            slotsState = Array(totalSlots).fill(null);
+            initGrid();
+            updateButtonState();
+        }
+
+        initGrid();
+    </script>
+</body>
+</html>
