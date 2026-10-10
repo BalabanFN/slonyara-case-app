@@ -2,105 +2,136 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GG Case - Главная</title>
     <style>
         body {
-            background-color: #121318;
+            background-color: #0b0c10;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
-            padding: 15px;
-            padding-bottom: 90px; /* Место под нижний таббар */
+            padding: 0;
+            display: flex;
+            justify-content: center;
             -webkit-user-select: none;
             user-select: none;
+        }
+
+        /* МОБИЛЬНЫЙ КОНТЕЙНЕР ДЛЯ ИДЕАЛЬНОГО ОТОБРАЖЕНИЯ */
+        .app-container {
+            width: 100%;
+            max-width: 420px; /* Зажимаем интерфейс в формат смартфона */
+            min-height: 100vh;
+            background-color: #121318;
+            box-sizing: border-box;
+            padding: 20px 16px 100px 16px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Шапка: Название проекта и Баланс */
         .header-container {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        .app-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #ffffff;
-            margin-bottom: 10px;
-        }
-
-        .balance-badge {
-            background-color: #1b1c24;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
+            margin-bottom: 18px;
+            background: #1b1c24;
+            padding: 12px 16px;
+            border-radius: 18px;
             border: 1px solid #292a34;
         }
         
+        .app-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #a1a1a1 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .balance-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .balance-badge {
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 15px;
+            color: #ffaa00;
+        }
+        
         .btn-deposit {
-            background-color: #246bfd;
+            background: linear-gradient(135deg, #246bfd 0%, #1253d4 100%);
             color: white;
             border: none;
-            padding: 3px 10px;
+            padding: 6px 14px;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
-            margin-left: 4px;
+            box-shadow: 0 4px 10px rgba(36, 107, 253, 0.3);
         }
 
         /* Живая лента дропов сверху */
         .live-ticker {
             display: flex;
-            gap: 14px;
+            gap: 16px;
             overflow-x: auto;
             white-space: nowrap;
-            padding: 6px 0;
+            padding: 10px;
             margin-bottom: 20px;
-            justify-content: center;
-            border-bottom: 1px solid #1c1d24;
+            background: #1b1c24;
+            border-radius: 16px;
+            border: 1px solid #292a34;
         }
         .live-ticker::-webkit-scrollbar { display: none; }
-        .ticker-icon { font-size: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .ticker-icon { font-size: 22px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
 
         /* Сетка вертикальных кнопок-меню */
         .menu-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-width: 360px;
-            margin: 0 auto;
+            width: 100%;
         }
 
-        /* Общие стили для игровых кнопок */
+        /* Сочные игровые кнопки */
         .menu-btn {
             display: flex;
             align-items: center;
-            padding: 14px 20px;
-            border-radius: 24px;
+            padding: 16px 20px;
+            border-radius: 22px;
             text-decoration: none;
             color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: transform 0.1s;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+            transition: transform 0.1s, filter 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
         .menu-btn:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .btn-icon {
-            font-size: 32px;
-            margin-right: 15px;
-            width: 42px;
+            font-size: 34px;
+            margin-right: 18px;
+            width: 45px;
             display: flex;
             justify-content: center;
             align-items: center;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
         }
         .btn-text {
             display: flex;
@@ -108,173 +139,145 @@
             text-align: left;
         }
         .btn-title {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 17px;
+            font-weight: 700;
             letter-spacing: 0.3px;
         }
         .btn-subtitle {
-            font-size: 11px;
+            font-size: 12px;
             color: rgba(255, 255, 255, 0.6);
-            margin-top: 2px;
+            margin-top: 3px;
         }
 
-        /* Цвета градиентов по скриншоту */
-        .bg-free { background: linear-gradient(135deg, #2b303d, #20232c); }
-        .bg-cases { background: linear-gradient(135deg, #2555bb, #173887); }
-        .bg-upgrade { background: linear-gradient(135deg, #621bc9, #3f1184); }
-        .bg-crash { background: linear-gradient(135deg, #235fc5, #163e8a); }
-        .bg-mines { background: linear-gradient(135deg, #cc3b3b, #862424); }
-        .bg-plinko { background: linear-gradient(135deg, #1aa3cc, #116886); }
-        .bg-contracts { background: linear-gradient(135deg, #b01acc, #6e1186); }
-        .bg-pvp { background: linear-gradient(135deg, #cc701a, #813b0b); }
-        .bg-slots { background: linear-gradient(135deg, #8c6e1a, #55430f); }
+        /* Градиенты кнопок */
+        .bg-free { background: linear-gradient(135deg, #2c313e, #1c1f26); }
+        .bg-cases { background: linear-gradient(135deg, #2f6bf2, #163fa3); }
+        .bg-upgrade { background: linear-gradient(135deg, #7928ca, #4a1580); }
+        .bg-crash { background: linear-gradient(135deg, #2272f2, #1346a8); }
+        .bg-mines { background: linear-gradient(135deg, #e53e3e, #9b1c1c); }
+        .bg-plinko { background: linear-gradient(135deg, #00b4d8, #0077b6); }
+        .bg-contracts { background: linear-gradient(135deg, #d62828, #003049); }
+        .bg-pvp { background: linear-gradient(135deg, #f77f00, #fcbf49); color: #000; }
+        .bg-pvp .btn-subtitle { color: rgba(0, 0, 0, 0.7); }
+        .bg-slots { background: linear-gradient(135deg, #9b5de5, #f15bb5); }
 
         .about-btn {
-            background-color: #212123; border: 1px solid #292a34; color: #7a7c85;
-            padding: 8px 16px; border-radius: 14px; font-size: 12px; font-weight: 500;
-            cursor: pointer; display: inline-block; margin: 20px auto; text-decoration: none;
+            background-color: #1b1c24; border: 1px solid #292a34; color: #7a7c85;
+            padding: 10px 20px; border-radius: 14px; font-size: 13px; font-weight: bold;
+            cursor: pointer; display: inline-block; margin: 25px auto 10px auto; text-decoration: none;
         }
 
-        /* Нижний таббар навигации (3 кнопки) */
+        /* Фиксированный нижний таббар навигации */
         .tab-bar {
             position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background-color: #121318;
+            bottom: 0;
+            width: 100%;
+            max-width: 420px; /* Сжимаем таббар под ширину контейнера */
+            background-color: #16171e;
             border-top: 1px solid #292a34;
             display: flex;
             justify-content: space-around;
-            padding: 8px 0;
+            padding: 10px 0 14px 0;
             z-index: 100;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.4);
         }
         .tab-item {
-            color: #55565f;
-            font-size: 10px;
-            font-weight: 500;
+            color: #6c6d7c;
+            font-size: 12px;
+            font-weight: 700;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             text-decoration: none;
-            width: 33.33%; /* Ровное деление на три части */
+            width: 33.33%;
+            transition: color 0.2s;
         }
-        .tab-icon { font-size: 20px; }
+        .tab-icon { font-size: 22px; }
         .tab-item.active { color: #246bfd; }
     </style>
 </head>
 <body>
 
-    <!-- Шапка лобби GG Case -->
-    <div class="header-container">
-        <div class="app-title">GG Case</div>
-        <!-- Изначальный баланс равен 0 -->
-        <div class="balance-badge">
-            ⭐ <span>0</span>
-            <button class="btn-deposit" onclick="alert('Оплата через Telegram Stars')">Пополнить</button>
+    <div class="app-container">
+        <!-- Шапка лобби GG Case с переходом на пополнение -->
+        <div class="header-container">
+            <div class="app-title">GG Case</div>
+            <div class="balance-container">
+                <div class="balance-badge">⭐ <span id="main-balance">0</span></div>
+                <a href="deposit.html"><button class="btn-deposit">+</button></a>
+            </div>
         </div>
-    </div>
 
-    <!-- Верхняя живая лента призов -->
-    <div class="live-ticker">
-        <div class="ticker-icon">👑</div><div class="ticker-icon">🧸</div>
-        <div class="ticker-icon">🎃</div><div class="ticker-icon">🌸</div>
-        <div class="ticker-icon">🍬</div><div class="ticker-icon">🧢</div>
-        <div class="ticker-icon">💎</div><div class="ticker-icon">💝</div>
-    </div>
+        <!-- Верхняя живая лента призов -->
+        <div class="live-ticker">
+            <div class="ticker-icon">👑</div><div class="ticker-icon">🧸</div>
+            <div class="ticker-icon">🎃</div><div class="ticker-icon">🌸</div>
+            <div class="ticker-icon">🍬</div><div class="ticker-icon"> Cap</div>
+            <div class="ticker-icon">💎</div><div class="ticker-icon">💝</div>
+        </div>
 
-    <!-- Список всех игровых разделов -->
-    <div class="menu-list">
-        
-        <!-- 1. Бесплатно -->
-        <a href="free.html" class="menu-btn bg-free">
-            <div class="btn-icon">🎁</div>
-            <div class="btn-text">
-                <div class="btn-title">Бесплатно</div>
-                <div class="btn-subtitle">2 кейсов</div>
-            </div>
-        </a>
+        <!-- Список всех игровых разделов -->
+        <div class="menu-list">
+            
+            <a href="free.html" class="menu-btn bg-free">
+                <div class="btn-icon">🎁</div>
+                <div class="btn-text">
+                    <div class="btn-title">Бесплатно</div>
+                    <div class="btn-subtitle">Ежедневные бонусы и билеты</div>
+                </div>
+            </a>
 
-        <!-- 2. Кейсы -->
-        <a href="cases.html" class="menu-btn bg-cases">
-            <div class="btn-icon">⭐</div>
-            <div class="btn-text">
-                <div class="btn-title">Кейсы</div>
-                <div class="btn-subtitle">20 кейсов</div>
-            </div>
-        </a>
+            <a href="cases.html" class="menu-btn bg-cases">
+                <div class="btn-icon">⭐</div>
+                <div class="btn-text">
+                    <div class="btn-title">Кейсы</div>
+                    <div class="btn-subtitle">Открывайте кейсы со Stars</div>
+                </div>
+            </a>
 
-        <!-- 3. Апгрейд -->
-        <a href="upgrade.html" class="menu-btn bg-upgrade">
-            <div class="btn-icon">🔮</div>
-            <div class="btn-text">
-                <div class="btn-title">Апгрейд</div>
-                <div class="btn-subtitle">Улучшите свои подарки</div>
-            </div>
-        </a>
+            <a href="upgrade.html" class="menu-btn bg-upgrade">
+                <div class="btn-icon">🔮</div>
+                <div class="btn-text">
+                    <div class="btn-title">Апгрейд</div>
+                    <div class="btn-subtitle">Улучшите свои подарки до редких</div>
+                </div>
+            </a>
 
-        <!-- 4. Краш -->
-        <a href="crash.html" class="menu-btn bg-crash">
-            <div class="btn-icon">🚀</div>
-            <div class="btn-text">
-                <div class="btn-title">Краш</div>
-                <div class="btn-subtitle">Онлайн</div>
-            </div>
-        </a>
+            <a href="crash.html" class="menu-btn bg-crash">
+                <div class="btn-icon">🚀</div>
+                <div class="btn-text">
+                    <div class="btn-title">Краш</div>
+                    <div class="btn-subtitle">Успейте забрать куш до взрыва раунда</div>
+                </div>
+            </a>
 
-        <!-- 5. Мины -->
-        <a href="mines.html" class="menu-btn bg-mines">
-            <div class="btn-icon">💣</div>
-            <div class="btn-text">
-                <div class="btn-title">Мины</div>
-                <div class="btn-subtitle">Угадайте верную ячейку</div>
-            </div>
-        </a>
+            <a href="mines.html" class="menu-btn bg-mines">
+                <div class="btn-icon">💣</div>
+                <div class="btn-text">
+                    <div class="btn-title">Мины</div>
+                    <div class="btn-subtitle">Ищите короны и обходите бомбы</div>
+                </div>
+            </a>
 
-        <!-- 6. Plinko -->
-        <a href="plinko.html" class="menu-btn bg-plinko">
-            <div class="btn-icon">🔘</div>
-            <div class="btn-text">
-                <div class="btn-title">Plinko</div>
-                <div class="btn-subtitle">Попадите шариком в цель</div>
-            </div>
-        </a>
+            <a href="plinko.html" class="menu-btn bg-plinko">
+                <div class="btn-icon">🔘</div>
+                <div class="btn-text">
+                    <div class="btn-title">Plinko</div>
+                    <div class="btn-subtitle">Запускайте шарики по колышкам пирамиды</div>
+                </div>
+            </a>
 
-        <!-- 7. Контракты -->
-        <a href="contracts.html" class="menu-btn bg-contracts">
-            <div class="btn-icon">📋</div>
-            <div class="btn-text">
-                <div class="btn-title">Контракты</div>
-                <div class="btn-subtitle">Объедините подарки</div>
-            </div>
-        </a>
+            <a href="contracts.html" class="menu-btn bg-contracts">
+                <div class="btn-icon">📋</div>
+                <div class="btn-text">
+                    <div class="btn-title">Контракты</div>
+                    <div class="btn-subtitle">Крафт супер-призов из 6 предметов</div>
+                </div>
+            </a>
 
-        <!-- 8. PvP -->
-        <a href="pvp.html" class="menu-btn bg-pvp">
-            <div class="btn-icon">⚔️</div>
-            <div class="btn-text">
-                <div class="btn-title">PvP</div>
-                <div class="btn-subtitle">Онлайн</div>
-            </div>
-        </a>
-
-        <!-- 9. Слоты -->
-        <a href="slots.html" class="menu-btn bg-slots">
-            <div class="btn-icon">🎰</div>
-            <div class="btn-text">
-                <div class="btn-title">Слоты</div>
-                <div class="btn-subtitle">5 кейсов</div>
-            </div>
-        </a>
-
-    </div>
-
-    <a href="#" class="about-btn">ℹ️ Об игре</a>
-
-    <!-- Нижняя навигационная панель (Только 3 нужных раздела) -->
-    <div class="tab-bar">
-        <a href="#" class="tab-item active"><span class="tab-icon">🎮</span>Игры</a>
-        <a href="tasks.html" class="tab-item"><span class="tab-icon">📋</span>Задания</a>
-        <a href="profile.html" class="tab-item"><span class="tab-icon">👤</span>Профиль</a>
-    </div>
-
-</body>
-</html>
+            <a href="pvp.html" class="menu-btn bg-pvp">
+                <div class="btn-icon">⚔️</div>
+                <div class="btn-text">
+                    <div class="btn-title">PvP Дуэли</div>
