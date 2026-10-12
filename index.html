@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Slonyara Case</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ВОТ ЭТИ ДВЕ СТРОЧКИ ГАРАНТИРУЮТ ПОЯВЛЕНИЕ ТЕНЕЙ: -->
+    <div class="shadow-top-overlay"></div>
+    <div class="shadow-bottom-overlay"></div>
+
+    <div class="main-page-wrapper">
+        
+        <!-- БЛОК ШАПКИ -->
+        <div class="brand-header-section">
+            <div class="app-brand-meta">
+                <img src="images/logo.png" class="app-avatar-mini" alt="Logo" onerror="this.style.display='none'">
+                <div class="app-title">Slonyara Case</div>
+            </div>
+            
+            <div class="main-balance-row">
+                <div class="balance-badge">⭐ <span>0</span></div>
+                <a href="deposit.html" class="deposit-link-btn">Пополнить</a>
+            </div>
+        </div>
+
+        <!-- LIVE ЛЕНТА -->
+        <div class="live-ticker-container">
+            <div class="live-badge">LIVE</div>
+            <div class="live-ticker">
+                <div class="ticker-icon">👑</div><div class="ticker-icon">🧸</div>
+                <div class="ticker-icon">🎃</div><div class="ticker-icon">🌸</div>
+                <div class="ticker-icon">🍬</div><div class="ticker-icon">🧢</div>
+                <div class="ticker-icon">💎</div><div class="ticker-icon">💝</div>
+                <div class="ticker-icon">🔥</div><div class="ticker-icon">🚀</div>
+                <div class="ticker-icon">🛸</div><div class="ticker-icon">🍀</div>
+            </div>
+        </div>
+
+               <!-- Список всех игровых разделов с рабочими ссылками -->
+        <div class="menu-list">
+            
+            <!-- 1. Бесплатно -->
+          <div class="menu-btn bg-free" onclick="openFreeModal()">
+    <div class="btn-icon">🎁</div>
+    <div class="btn-text">
+        <div class="btn-title">Бесплатно</div>
+        <div class="btn-subtitle">Ежедневные бонусы и билеты</div>
+    </div>
+</div>
+
+            <!-- 2. Кейсы -->
+            <a href="cases.html" class="menu-btn bg-cases">
+                <div class="btn-icon">⭐</div>
+                <div class="btn-text">
+                    <div class="btn-title">Кейсы</div>
+                    <div class="btn-subtitle">Открывайте кейсы за Stars</div>
+                </div>
+            </a>
+
+            <!-- 3. Апгрейд -->
+            <a href="upgrade.html" class="menu-btn bg-upgrade">
+                <div class="btn-icon">🔮</div>
+                <div class="btn-text">
+                    <div class="btn-title">Апгрейд</div>
+                    <div class="btn-subtitle">Улучшите свои подарки</div>
+                </div>
+            </a>
+
+            <!-- 4. Краш -->
+            <a href="crash.html" class="menu-btn bg-crash">
+                <div class="btn-icon">🚀</div>
+                <div class="btn-text">
+                    <div class="btn-title">Краш</div>
+                    <div class="btn-subtitle">Успейте забрать куш</div>
+                </div>
+            </a>
+
+            <!-- 5. Мины -->
+            <a href="mines.html" class="menu-btn bg-mines">
+                <div class="btn-icon">💣</div>
+                <div class="btn-text">
+                    <div class="btn-title">Мины</div>
+                    <div class="btn-subtitle">Угадайте верную ячейку</div>
+                </div>
+            </a>
+
+            <!-- 6. Plinko -->
+            <a href="plinko.html" class="menu-btn bg-plinko">
+                <div class="btn-icon">🔘</div>
+                <div class="btn-text">
+                    <div class="btn-title">Plinko</div>
+                    <div class="btn-subtitle">Попадите шариком в цель</div>
+                </div>
+            </a>
+
+            <!-- 7. Контракты -->
+            <a href="contracts.html" class="menu-btn bg-contracts">
+                <div class="btn-icon">📋</div>
+                <div class="btn-text">
+                    <div class="btn-title">Контракты</div>
+                    <div class="btn-subtitle">Обьедените подарки</div>
+                </div>
+            </a>
+
+            <!-- 8. PvP Дуэли -->
+            <a href="pvp.html" class="menu-btn bg-pvp">
+                <div class="btn-icon">⚔️</div>
+                <div class="btn-text">
+                    <div class="btn-title">PvP Дуэли</div>
+                    <div class="btn-subtitle">Онлайн битвы за общий банк</div>
+                </div>
+            </a>
+
+            <!-- 9. Слоты -->
+            <a href="slots.html" class="menu-btn bg-slots">
+                <div class="btn-icon">🎰</div>
+                <div class="btn-text">
+                    <div class="btn-title">Слоты</div>
+                    <div class="btn-subtitle">Испытайте удачу в игровом автомате</div>
+                </div>
+            </a>
+
+        </div>
+
+           <!-- Твой фиксированный нижний таббар навигации остаётся на своём месте внутри wrapper -->
+        <div class="tab-bar">
+            <a href="index.html" class="tab-item active"><span class="tab-icon">🎮</span>Игры</a>
+            <a href="tasks.html" class="tab-item tab-tasks-link"><span class="tab-icon">📋</span>Задания<span class="task-badge-count" id="global-task-badge">7</span></a>
+            <a href="profile.html" class="tab-item"><span class="tab-icon">👤</span>Профиль</a>
+        </div>
+
+    </div> <!-- Конец блока .main-page-wrapper -->
+
+    <!-- ВОТ СЮДА ВСТАВЛЯЙ ОКНО, ВНЕ ВСЕХ КОНТЕЙНЕРОВ: -->
+    <div class="modal-sheet-overlay" id="freeModalOverlay" onclick="closeFreeModal()">
+        <div class="modal-sheet-content" onclick="event.stopPropagation()">
+            
+            <div class="modal-header-row">
+                <div class="modal-game-title">Бесплатно</div>
+                <div class="modal-close-cross" onclick="closeFreeModal()">✕</div>
+            </div>
+            
+            <div class="modal-cases-grid">
+                <a href="free.html" class="case-item-card" style="text-decoration: none;">
+                    <div class="case-image-placeholder">🎃👜</div>
+                    <div class="case-meta-row">
+                        <span class="case-name">Daily</span>
+                        <span class="case-price price-orange">⭐ 0</span>
+                    </div>
+                </a>
+
+                <a href="free.html" class="case-item-card" style="text-decoration: none;">
+                    <div class="case-image-placeholder">🧢🎫</div>
+                    <div class="case-meta-row">
+                        <span class="case-name">Tickets</span>
+                        <span class="case-price price-blue">🎫 10</span>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Твой блок скрипта -->
+    <script>
+        // ... весь JavaScript код ...
+    </script>
+</body>
+</html>
+
+        <!-- Фиксированный нижний таббар -->
+        <div class="tab-bar">
+    <!-- Класс active стоит здесь: -->
+    <a href="index.html" class="tab-item active"><span class="tab-icon">🎮</span>Игры</a>
+    <a href="tasks.html" class="tab-item tab-tasks-link"><span class="tab-icon">📋</span>Задания<span class="task-badge-count">7</span></a>
+    <a href="profile.html" class="tab-item"><span class="tab-icon">👤</span>Профиль</a>
+</div>
+
+
+    </div>
+
+       <script>
+        const liveItemsPool = ["👑", "🧸", "🎃", "🌸", "🍬", "🧢", "💎", "💝", "🔥", "🚀", "🛸", "🍀", "🍦", "🌟", "🐱", "🦊"];
+        const ticker = document.querySelector('.live-ticker');
+
+        // Функция первоначального заполнения ленты при старте
+        function fillTickerOnStart() {
+            if (!ticker) return;
+            ticker.innerHTML = '';
+            for (let i = 0; i < 40; i++) {
+                const icon = document.createElement('div');
+                icon.className = 'ticker-icon';
+                icon.innerText = liveItemsPool[Math.floor(Math.random() * liveItemsPool.length)];
+                ticker.appendChild(icon);
+            }
+        }
+
+        // Логика движения: новые вылетают слева из-под слова LIVE, старые уходят вправо
+        function updateLiveTicker() {
+            if (!ticker) return;
+
+            // 1. Создаем новый подарок слева (метод prepend)
+            const newIcon = document.createElement('div');
+            newIcon.className = 'ticker-icon';
+            newIcon.innerText = liveItemsPool[Math.floor(Math.random() * liveItemsPool.length)];
+            
+            newIcon.style.opacity = '0';
+            newIcon.style.transform = 'scale(0.5)';
+            newIcon.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+            ticker.prepend(newIcon);
+
+            setTimeout(function() {
+                newIcon.style.opacity = '1';
+                newIcon.style.transform = 'scale(1)';
+            }, 50);
+
+            // 2. Плавно удаляем самый старый подарок справа
+            const allIcons = ticker.querySelectorAll('.ticker-icon');
+            if (allIcons.length > 0) {
+                const lastIcon = allIcons[allIcons.length - 1];
+                
+                lastIcon.style.transition = 'all 0.5s ease';
+                lastIcon.style.opacity = '0';
+                lastIcon.style.transform = 'scale(0.3)';
+                lastIcon.style.width = '0px';
+                lastIcon.style.marginLeft = '-28px';
+                
+                setTimeout(function() {
+                    lastIcon.remove();
+                }, 500);
+            }
+        }
+
+        // Запуск логики
+        fillTickerOnStart();
+        setInterval(updateLiveTicker, 1500); // Обновление каждые 1.5 сек
+    function openFreeModal() {
+    const overlay = document.getElementById('freeModalOverlay');
+    overlay.style.display = 'flex';
+    setTimeout(() => { overlay.classList.add('active'); }, 10);
+}
+
+function closeFreeModal() {
+    const overlay = document.getElementById('freeModalOverlay');
+    overlay.classList.remove('active');
+    setTimeout(() => { overlay.style.display = 'none'; }, 200);
+}
+ </script>
+  

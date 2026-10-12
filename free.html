@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Slonyara Case - Daily Case</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Используем тот же класс обертки, чтобы сохранить наши офигенные глубокие тени фона! -->
+    <div class="main-page-wrapper daily-green-theme">
+        
+        <!-- КНОПКА КРЕСТИК ДЛЯ ВОЗВРАТА В ГЛАВНОЕ МЕНЮ -->
+        <a href="index.html" class="exit-case-page-cross">✕</a>
+
+        <!-- Дальше идет твой блок brand-header-section... -->
+
+                    <!-- МИНИ-ШАПКА В САМОМ ВЕРХУ ЭКРАНА -->
+        <div class="mini-case-header">
+            <img src="images/logo.png" class="app-avatar-mini" alt="Logo" onerror="this.style.display='none'">
+            <span class="mini-app-title">Slonyara Case</span>
+        </div>
+
+              <!-- РАЗДЕЛЬНЫЕ ОКРУГЛЫЕ БАЛАНСЫ С КНОПКАМИ ПОПОЛНЕНИЯ -->
+        <div class="split-balances-row">
+            
+            <!-- Баланс Звезд -->
+            <div class="single-balance-badge balance-stars-box">
+                <span class="balance-text-value">⭐ <span id="case-stars">35</span></span>
+                <a href="deposit.html" class="balance-plus-btn">+</a>
+            </div>
+
+            <!-- Баланс Билетов -->
+            <div class="single-balance-badge balance-tickets-box">
+                <span class="balance-text-value">🎫 <span id="case-tickets">0</span></span>
+                <a href="deposit.html" class="balance-plus-btn">+</a>
+            </div>
+
+        </div>
+
+        <!-- НАША ФИРМЕННАЯ LIVE ЛЕНТА НАД РУЛЕТКОЙ -->
+        <div class="live-ticker-container">
+            <div class="live-badge">LIVE</div>
+            <div class="live-ticker" id="liveTickerUpper">
+                <!-- Заполняется подарками через JavaScript -->
+            </div>
+        </div>
+
+                    <div class="roulette-container">
+            <!-- Идеальный верхний уголок -->
+            <div class="roulette-arrow arrow-top">∨</div>
+            
+            <div class="roulette-track-wrapper">
+                <div class="roulette-track" id="rouletteTrack"></div>
+            </div>
+            
+            <!-- Идеальный зеркальный нижний уголок -->
+            <div class="roulette-arrow arrow-bottom">∧</div>
+        </div>
+
+        <!-- КНОПКИ УПРАВЛЕНИЯ В САМОМ НИЗУ ЭКРАНА -->
+        <div class="case-controls-wrapper">
+            <div class="sub-controls-row">
+                <button class="sub-btn btn-settings" onclick="openSettingsModal()">⚙️ Настройки</button>
+                <button class="sub-btn btn-prizes" onclick="openPrizesModal()">🎁 Призы</button>
+            </div>
+            <button class="main-spin-btn" id="spinBtn" onclick="startCaseSpin()">Крутить</button>
+        </div>
+
+    </div>
+
+    <!-- ЛОГИКА РУЛЕТКИ (ГЕНЕРАЦИЯ ЛЕНТЫ И КРУТИЛКА) -->
+    <script>
+
+          // 1. НАСТРОЙКА БАЗЫ ПРЕДМЕТОВ И ПЕРЕМЕННЫХ
+        const dailyCasePrizes = ["🎃", "👜", "💍", "🐱", "🚀", "💎", "⭐", "🍄", "🔮"];
+        const liveItemsPool = ["👑", "🧸", "🎃", "🌸", "🍬", "🧢", "💎", "💝", "🔥", "🚀"];
+        
+        const track = document.getElementById('rouletteTrack');
+        const ticker = document.getElementById('liveTickerUpper');
+        
+        let isSpinning = false;
+        let hasClickedChannel = false;
+
+        // 2. ЗАПОЛНЕНИЕ И ДВИЖЕНИЕ ВЕРХНЕЙ LIVE-ЛЕНТЫ
+        function fillTickerOnStart() {
+            if (!ticker) return;
+            ticker.innerHTML = '';
+            for (let i = 0; i < 40; i++) {
+                const icon = document.createElement('div');
+                icon.className = 'ticker-icon';
+                icon.innerText = liveItemsPool[Math.floor(Math.random() * liveItemsPool.length)];
+                ticker.appendChild(icon);
+            }
+        }
+
+        function updateLiveTicker() {
+            if (!ticker) return;
+            const newIcon = document.createElement('div');
+            newIcon.className = 'ticker-icon';
+            newIcon.innerText = liveItemsPool[Math.floor(Math.random() * liveItemsPool.length)];
+            ticker.prepend(newIcon);
+            const allIcons = ticker.querySelectorAll('.ticker-icon');
+            if (allIcons.length > 0) { allIcons[allIcons.length - 1].remove(); }
+        }
+
+        // 3. ГЕНЕРАЦИЯ ПРЕДМЕТОВ ДЛЯ ИГРОВОГО БАРАБАНА
+        function generateRouletteItems() {
+            if (!track) return;
+            track.innerHTML = '';
+            // Дублируем предметы, чтобы дорожка была длинной и завлекающей
+            for (let i = 0; i < 60; i++) {
+                const item = document.createElement('div');
+                item.className = 'roulette-item';
+                const prize = dailyCasePrizes[i % dailyCasePrizes.length];
+                item.innerHTML = `
+                    <div class="item-emoji">${prize}</div>
+                    <div class="item-reward-cost">⭐ ${Math.floor(Math.random() * 300) + 40}</div>
+                `;
+                track.appendChild(item);
+            }
+        }
+
+        // 4. ЛОГИКА НАЖАТИЯ НА КНОПКУ «КРУТИТЬ»
+        function startCaseSpin() {
+            if (isSpinning) return;
+            openConditionsModal(); // Открываем созданное окно подписки
+        }
+
+        function openConditionsModal() {
+            const overlay = document.getElementById('conditionsModalOverlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+                setTimeout(() => { overlay.classList.add('active'); }, 10);
+            }
+        }
+
+        function closeConditionsModal() {
+            const overlay = document.getElementById('conditionsModalOverlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+                setTimeout(() => { overlay.style.display = 'none'; }, 200);
+            }
+        }
+
+        function markTaskClicked() {
+            hasClickedChannel = true;
+        }
+
+        function verifySubscriptionAndSpin() {
+            if (!hasClickedChannel) {
+                alert("Сначала нажмите на задание и подпишитесь на наш канал!");
+                return;
+            }
+            const readyBtn = document.getElementById('checkSubBtn');
+            readyBtn.innerText = "Проверка...";
+            readyBtn.disabled = true;
+
+            setTimeout(() => {
+                closeConditionsModal();
+                executeRealSpin(); // Запускаем само вращение
+                readyBtn.innerText = "Готово";
+                readyBtn.disabled = false;
+            }, 1200);
+        }
+
+        // 5. РЕАЛЬНЫЙ СТОП-КРУГ РУЛЕТКИ С ПЛАВНЫМ ТОРМОЖЕНИЕМ
+        function executeRealSpin() {
+            isSpinning = true;
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+            btn.innerText = "Крутится...";
+
+            // Выключаем пассивное CSS-движение на время игры
+            track.style.animation = 'none'; 
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0)';
+
+            setTimeout(() => {
+                track.style.transition = 'transform 4.5s cubic-bezier(0.1, 0.8, 0.1, 1)';
+                const randomShift = Math.floor(Math.random() * 500) + 3200;
+                track.style.transform = `translateX(-${randomShift}px)`;
+            }, 50);
+
+            setTimeout(() => {
+                alert("Поздравляем! Предмет зачислен на баланс.");
+                startTimer(24 * 60 * 60); // Переводим в режим таймера на 24 часа
+                isSpinning = false;
+                generateRouletteItems(); // Перегенерируем ленту для следующего раза
+            }, 4600);
+        }
+
+        // 6. ТАЙМЕР ОБРАТНОГО ОТСЧЕТА ДО СЛЕДУЮЩИХ СУТОК
+        function startTimer(duration) {
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+            let timer = duration, hours, minutes, seconds;
+            const interval = setInterval(function () {
+                hours = parseInt(timer / 3600, 10);
+                minutes = parseInt((timer % 3600) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                btn.innerText = "Через " + hours + ":" + minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    btn.innerText = "Крутить";
+                    btn.disabled = false;
+                    track.style.animation = 'passiveScroll 25s linear infinite'; // Возвращаем авто-скролл
+                }
+            }, 1000);
+        }
+
+        // Автоматический старт всех систем при загрузке страницы
+        fillTickerOnStart();
+        setInterval(updateLiveTicker, 1500);
+        generateRouletteItems();
+    </script>
+    <!-- МОДАЛЬНОЕ ОКНО: ВЫПОЛНИТЕ УСЛОВИЯ -->
+    <div class="modal-sheet-overlay" id="conditionsModalOverlay" onclick="closeConditionsModal()">
+        <div class="modal-sheet-content conditions-box" onclick="event.stopPropagation()">
+            
+            <div class="modal-header-row">
+                <div class="modal-game-title" style="font-size: 19px;">Выполните условия</div>
+                <div class="modal-close-cross" onclick="closeConditionsModal()">✕</div>
+            </div>
+            
+            <p class="conditions-subtitle">Чтобы крутить этот кейс</p>
+
+            <div class="conditions-list">
+                <!-- Одно главное задание: подписка на канал -->
+                <a href="https://t.me/My_Slonyara_News" target="_blank" class="condition-item-row" onclick="markTaskClicked()">
+                    <div class="condition-meta">
+                        <div class="condition-icon-badge">📢</div>
+                        <div class="condition-text-block">
+                            <div class="condition-name">Подпишитесь на канал</div>
+                            <div class="condition-desc">И заберите приз</div>
+                        </div>
+                    </div>
+                    <div class="condition-chevron">❯</div>
+                </a>
+            </div>
+
+            <button class="modal-ready-btn" id="checkSubBtn" onclick="verifySubscriptionAndSpin()">Готово</button>
+        </div>
+    </div>
+</body>
+</html>

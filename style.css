@@ -1,0 +1,782 @@
+body {
+    background-color: #272727;
+    color: #ffffff;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.main-page-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding-bottom: 110px;
+    
+    /* УДАЛИЛИ СТАРЫЙ BOX-SHADOW И ВСТАВИЛИ ДВА ГИГАНТСКИХ ГРАДИЕНТА ДО ЦЕНТРА: */
+    background: 
+        linear-gradient(to bottom, rgba(25, 24, 29, 0.98) 0%, rgba(31, 29, 29, 0.7) 20%, rgba(0, 0, 0, 0) 50%),
+        linear-gradient(to top, rgba(20, 20, 20, 0.98) 0%, rgba(17, 16, 16, 0.7) 20%, rgba(0, 0, 0, 0) 50%),
+        #302f2f; /* Твой текущий посветлевший фон страницы */
+}
+/* БЛОК БРЕНДА */
+.brand-header-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 480px;
+    margin: 20px auto 15px auto;
+    background: #2b2b30;
+    padding: 16px;
+    border-radius: 24px;
+    border: 1px solid #1e2027;
+    box-sizing: border-box;
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.3), inset 0 0 15px rgba(34, 197, 94, 0.1);
+}
+
+.app-brand-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.app-avatar-mini { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.3); }
+.app-title { font-size: 21px; font-weight: 900; color: #ffffff; text-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+font-family: Trebuchet MS }
+
+.main-balance-row { display: flex; align-items: center; justify-content: space-between; background: #0d0e12; padding: 8px 8px 8px 18px; border-radius: 20px; border: 1px solid #232731; width: 100%; box-sizing: border-box; }
+.balance-badge { font-weight: 900; font-size: 17px; color: #ffaa00; }
+.deposit-link-btn { background: linear-gradient(135deg, #246bfd 0%, #1253d4 100%); color: white; text-decoration: none; padding: 8px 24px; border-radius: 16px; font-size: 13px; font-weight: bold; box-shadow: 0 4px 12px rgba(36, 107, 253, 0.35); }
+
+/* LIVE ЛЕНТА */
+/* LIVE ЛЕНТА */
+.live-ticker-container {
+    width: calc(100% - 16px) !important; /* ⬅️ Делаем полосу чуть короче, создавая отступ */
+    margin-left: 16px !important;        /* ⬅️ Сдвигаем полосу вправо от левого края страницы */
+    background-color: #363636;
+    border-top: 1px solid #1f222b;
+    border-bottom: 1px solid #1f222b;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    height: 64px;
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+    
+    /* ⬅️ ЗАДАЕМ ЗАКРУГЛЕНИЕ ТОЛЬКО ДЛЯ ЛЕВЫХ УГЛОВ (Верхний-левый и Нижний-левый) */
+    border-top-left-radius: 20px !important;
+    border-bottom-left-radius: 20px !important;
+    
+    /* Правые углы оставляем острыми (0), чтобы лента уходила в край экрана */
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+.live-badge { background-color: #353536; color: #ffffff; font-size: 25px; font-weight: 900; text-transform: uppercase; margin-right: 20px; letter-spacing: 0.8px; border: none; padding: 10px 0; z-index: 10; position: relative; }
+.live-ticker { 
+    display: flex !important; 
+    gap: 8px !important; 
+    align-items: center !important; /* ⬅️ Это жестко выравнивает эмодзи по центру вертикали */
+    justify-content: flex-start !important;
+    width: max-content !important; 
+    min-width: 100vw !important; /* ⬅️ Растягивает дорожку на всю ширину экрана компьютера */
+    flex-wrap: nowrap !important; 
+}
+
+.ticker-icon {
+    font-size: 40px !important;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)) !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important; /* ⬅️ Центрирует эмодзи внутри иконки */
+    justify-content: center !important;
+    line-height: 1 !important; /* Убирает лишние невидимые отступы шрифта */
+    height: 100% !important;
+}
+
+/* Допиши ниже новый блок стилей для самих картинок стикеров: */
+.ticker-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;    /* Гарантирует, что картинка не сожмется и не потеряет пропорции */
+}
+/* СЕТКА РЕЖИМОВ */
+.menu-list-container { width: 100%; max-width: 480px; padding: 0 16px; box-sizing: border-box; }
+/* А вот саму колонку кнопок жестко центрируем и сужаем под виджет! */
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 480px; /* ⬅️ Зажимаем кнопки под размер верхнего виджета */
+    margin: 0 auto;   /* ⬅️ Центрируем их ровно по середине экрана ПК */
+}
+.menu-btn { display: flex; align-items: center; padding: 19px 25px; border-radius: 30px; text-decoration: none; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255, 255, 255, 0.02); box-sizing: border-box; width: 100%; cursor: pointer; }
+
+.btn-icon { font-size: 32px; margin-right: 18px; width: 42px; display: flex; justify-content: center; align-items: center; }
+.btn-text { display: flex; flex-direction: column; text-align: left; }
+.btn-title { font-size: 22px; font-weight: 1000; }
+.btn-subtitle { font-size: 13px; color: rgba(255, 255, 255, 0.55); margin-top: 3px; }
+
+.bg-free { background: linear-gradient(135deg, #313850, #474c77); }
+.bg-cases { background: linear-gradient(135deg, #1c4dd3, #2261ff); }
+.bg-upgrade { background: linear-gradient(135deg, #6814bd, #8334eb); }
+.bg-crash { background: linear-gradient(135deg, #040a5c, #0d329c); }
+.bg-mines { background: linear-gradient(135deg, #8f2323, #b63131); }
+.bg-plinko { background: linear-gradient(135deg, #055768, #079ada); }
+.bg-contracts { background: linear-gradient(135deg, #91108a, #b810b8); }
+.bg-pvp { background: linear-gradient(135deg, #aa5e06, #df740a); }
+.bg-slots { background: linear-gradient(135deg, #8f6505, #e0a40a); }
+
+/* ИСПРАВЛЕННОЕ МОДАЛЬНОЕ ОКНО ПО МАКЕТУ С РАЗМЫТИЕМ */
+.modal-sheet-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    
+    /* Эффект матового матового размытия заднего фона из твоего макета */
+    background-color: rgba(0, 0, 0, 0.767);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    display: none;
+    justify-content: center;
+    align-items: center; /* Центрируем ровно посередине экрана ПК */
+    z-index: 300;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+/* ⬇️ ДОБАВЬ ИМЕННО ЭТОТ КУСОК, ОН ЗАСТАВЛЯЕТ ОКНО ПРОЯВИТЬСЯ */
+.modal-sheet-overlay.active { 
+    display: flex !important; /* Меняем скрытый статус на видимый */
+    opacity: 1 !important; 
+}
+/* 1. ГЛАВНОЕ ОКНО С ВНУТРЕННИМИ ГЛУБОКИМИ ТЕНЯМИ К ЦЕНТРУ */
+.modal-sheet-content {
+    width: 90%;
+    max-width: 430px; /* Сделали само окно просторнее */
+    min-height: 250px; /* Увеличили базовую высоту плашки */
+    background-color: #000000;
+    border-radius: 28px;
+    border: 1px solid #2a2e3b;
+    padding: 24px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden; /* Чтобы внутренние тени не вылезали за закругленные края */
+    
+    /* ТОЧНО ТАКИЕ ЖЕ ГЛУБОКИЕ СХОДЯЩИЕСЯ ТЕНИ, КАК В ГЛАВНОМ МЕНЮ */
+    background: 
+        linear-gradient(to bottom, rgba(32, 32, 32, 0.95) 0%, rgba(41, 41, 41, 0.6) 20%, rgba(97, 91, 91, 0) 60%),
+        linear-gradient(to top, rgba(34, 33, 33, 0.95) 0%, rgba(53, 52, 52, 0.6) 20%, rgba(5, 4, 4, 0) 60%),
+        #323233;
+
+    transform: scale(0.85);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+}
+.modal-sheet-overlay.active .modal-sheet-content { transform: scale(1); }
+
+/* 2. ШАПКА ОКНА: ЦЕНТРИРОВАНИЕ */
+.modal-header-row {
+    display: flex;
+    justify-content: center; /* Сдвигаем заголовок строго по центру строки */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+/* Название "Бесплатно" стало больше */
+.modal-game-title { 
+    font-size: 27px; /* Увеличили размер шрифта */
+    font-weight: 900; 
+    color: #ffffff; 
+    letter-spacing: 0.5px;
+}
+
+/* Крестик: поднят, сделан больше и светлее */
+.modal-close-cross { 
+    position: absolute !important;
+    top: -21px !important;     /* Сместили ближе к верхнему краю */
+    right: -8px !important;   /* Загнали в самый правый угол */
+    font-size: 20px !important; /* Сделали крупнее и заметнее */
+    color: #c0baba !important; /* Прямо чистый белый яркий цвет */
+    opacity: 2 !important;  /* Чуть-чуть приглушили, чтобы смотрелся стильно */
+    cursor: pointer; 
+    padding: 6px; 
+    transition: color 0.1s, transform 0.1s; 
+}
+.modal-close-cross:hover { color: #ffffff; transform: scale(1.1); }
+
+/* 3. КАРТОЧКИ КЕЙСОВ: НАСТРОЙКА РАЗМЕРА И ЦВЕТА */
+.modal-cases-grid {
+    display: flex;
+    gap: 15px; /* Увеличили зазор между карточками */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.case-item-card {
+    flex: 1;
+    background-color: #454547; /* Сделали подложку карточек глубокой тёмной */
+    border-radius: 20px; /* Красивое сглаженное закругление углов */
+    border: 1px solid #282b36; /* Четкий контур карточки */
+    padding: 20px 14px; /* КАРДИНАЛЬНО УВЕЛИЧИЛИ ВЫСОТУ И ВНУТРЕННИЙ ОБЪЕМ */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4); /* Мягкая тень под самой карточкой */
+    transition: transform 0.1s, background-color 0.2s;
+}
+.case-item-card:active { transform: scale(0.96); }
+.case-item-card:hover { background-color: #14161b; border-color: #383d4d; }
+
+/* В будущем сюда встанут картинки из папки images */
+.case-image-placeholder {
+    font-size: 50px;
+    margin-bottom: 14px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+}
+
+.case-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 4px;
+    box-sizing: border-box;
+}
+
+.case-name { font-size: 24px; font-weight: bold; color: #ffffff; }
+.case-price { font-size: 24px; font-weight: 900; }
+.price-orange { color: #ffaa00; }
+.price-blue { color: #246bfd; }
+
+.modal-game-description { font-size: 13px; color: #697288; line-height: 1.5; text-align: center; }
+
+/* ТАББАР */
+.tab-bar { 
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    width: 100%; 
+    background-color: #12151d; 
+    border-top: 1px solid #191c25; 
+    display: flex; 
+    justify-content: center; 
+    padding: 12px 0 16px 0; 
+    z-index: 200; 
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8) !important;
+} /* ⬅️ ВОТ ЭТУ СКОБКУ МЫ ВЕРНУЛИ НА МЕСТО! */
+
+.tab-item { 
+    color: #2f334b; 
+    font-size: 12px; 
+    font-weight: 800; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 5px; 
+    text-decoration: none; 
+    width: 100%; 
+    max-width: 140px; 
+    position: relative; 
+}
+.tab-icon { font-size: 30px; }
+.tab-item.active { color: #139133; }
+.task-badge-count { position: absolute; top: -2px; right: calc(50% - 26px); background-color: #ff3b30; color: #ffffff; font-size: 10px; font-weight: 900; min-width: 16px; height: 16px; border-radius: 8px; display: flex; justify-content: center; align-items: center; padding: 0 4px; box-sizing: border-box; border: 2px solid #090a0d; }
+
+/* Возвращаем отображение маленькой круглой аватарки в шапку */
+.app-avatar-mini {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 2px solid #22c55e !important;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.3) !important;
+    flex-shrink: 0 !important;
+} /* ⬅️ ТУТ ОСТАЛАСЬ ОДНА ПРАВИЛЬНАЯ СКОБКА СИСТЕМЫ */
+/* ======================================================= */
+/* ЭКРАН ОТКРЫТИЯ КЕЙСА (РУЛЕТКА И КНОПКИ) */
+/* ======================================================= */
+
+.case-page-header {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 16px 10px 16px;
+    box-sizing: border-box;
+}
+
+.back-to-lobby-btn {
+    color: #8c91a3;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.case-page-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffffff;
+}
+
+/* Контейнер всей рулетки по центру дисплея */
+.roulette-container {
+    width: 100%;
+    position: relative;
+    margin: auto 0; /* Выравнивает рулетку строго по центру высоты экрана */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Центральные стрелочки-указатели */
+.roulette-arrow {
+    font-size: 16px;
+    color: #ffaa00;
+    z-index: 50;
+    text-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
+}
+.arrow-top { margin-bottom: 6px; }
+.arrow-bottom { margin-top: 6px; }
+
+/* Окошко рулетки: растягиваем на весь экран без боковых ограничений */
+.roulette-track-wrapper {
+    width: 100% !important;
+    max-width: 100vw !important; /* Убирает сжатие по бокам, лента летит во всю ширь */
+    height: 160px !important; /* Сделали барабан повыше и мощнее */
+    background-color: rgba(17, 18, 22, 0.25) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Бегущая дорожка: по умолчанию плавно и бесконечно едет влево сама по себе */
+.roulette-track {
+    display: flex !important;
+    gap: 16px !important;
+    width: max-content !important;
+    animation: passiveScroll 25s linear infinite; /* Бесконечное завлекающее движение */
+}
+
+/* Эффект постоянного пассивного вращения казино-барабана */
+@keyframes passiveScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-1500px); } /* Мягко уплывает влево */
+}
+
+/* Если хочешь изменить цвет фона страницы на такой же глубокий синий градиент: */
+.case-page-background-override {
+    background: radial-gradient(circle, #1a3ba8 0%, #0b1536 100%) !important;
+}
+
+/* Карточка отдельного предмета внутри рулетки */
+.roulette-item {
+    width: 90px;
+    height: 110px;
+    background: linear-gradient(135deg, #1b1e26 0%, #111216 100%);
+    border: 1px solid #232731;
+    border-radius: 16px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 6px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.item-emoji {
+    font-size: 34px;
+    margin-top: 4px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+}
+
+.item-reward-cost {
+    font-size: 11px;
+    font-weight: 900;
+    color: #ffaa00;
+}
+
+/* Различные подсветки редкости для предметов */
+.rarity-rare { border-color: #246bfd; background: linear-gradient(135deg, #182a52 0%, #111216 100%); }
+.rarity-legendary { border-color: #b01acc; background: linear-gradient(135deg, #3d1247 0%, #111216 100%); }
+
+/* НИЖНИЙ БЛОК КНОПОК УПРАВЛЕНИЯ */
+.case-controls-wrapper {
+    width: 100%;
+    max-width: 480px;
+    padding: 0 16px 20px 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sub-controls-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.sub-btn {
+    flex: 1;
+    background-color: #252936;
+    border: 1px solid #3a3f50;
+    color: #ffffff;
+    padding: 12px 0;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.sub-btn:active { transform: scale(0.97); }
+
+/* Огромная кнопка КРУТИТЬ */
+.main-spin-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #246bfd 0%, #1253d4 100%);
+    color: white;
+    border: none;
+    border-radius: 18px;
+    padding: 16px 0;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(36, 107, 253, 0.4);
+    transition: transform 0.1s;
+}
+.main-spin-btn:active { transform: scale(0.98); }
+.main-spin-btn:disabled { background: #232630; box-shadow: none; color: #4e5161; }
+/* КЛАССЫ ДЛЯ ОКНА ВЫПОЛНЕНИЯ УСЛОВИЙ КЕЙСА */
+.conditions-box {
+    max-width: 380px !important;
+    min-height: auto !important;
+    padding: 20px 18px 24px 18px !important;
+}
+
+.conditions-subtitle {
+    font-size: 11px;
+    color: #697288;
+    margin: -16px 0 20px 0;
+    text-align: center;
+}
+
+.conditions-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Строчка задания подписки */
+.condition-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1b22;
+    border: 1px solid #282b36;
+    border-radius: 16px;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: background-color 0.15s;
+}
+.condition-item-row:hover { background-color: #20222a; }
+
+.condition-meta { display: flex; align-items: center; gap: 12px; }
+
+.condition-icon-badge {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #ff5e3a 0%, #ff2a68 100%);
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 16px;
+}
+
+.condition-text-block { text-align: left; }
+.condition-name { font-size: 13px; font-weight: 800; }
+.condition-desc { font-size: 10px; color: #5c6273; margin-top: 2px; }
+.condition-chevron { color: #444957; font-size: 12px; }
+
+/* Синяя кнопка Готово */
+.modal-ready-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #246bfd 0%, #1253d4 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 0;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(36, 107, 253, 0.35);
+}
+.modal-ready-btn:disabled { background: #232630; color: #4e5161; box-shadow: none; }
+/* КНОПКА-КРЕСТИК ДЛЯ ВЫХОДА ИЗ РУЛЕТКИ В ЛОББИ */
+.exit-case-page-cross {
+    position: absolute !important;
+    top: 24px !important;
+    right: 28px !important;
+    font-size: 26px !important;
+    color: #8c91a3 !important;
+    text-decoration: none !important;
+    font-weight: bold !important;
+    z-index: 9999 !important; /* Выносим на самый верхний слой, чтобы легко кликалось */
+    transition: color 0.15s, transform 0.15s !important;
+    cursor: pointer !important;
+}
+
+.exit-case-page-cross:hover {
+    color: #ffffff !important;
+    transform: scale(1.15) !important; /* Слегка увеличивается при наведении мышки на ПК */
+}
+/* Новая облегченная мини-шапка */
+.mini-case-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 12px;
+}
+.mini-app-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: #ffffff;
+    font-family: 'Trebuchet MS', sans-serif;
+}
+
+/* Раздельные закругленные плашки балансов по макету */
+.split-balances-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+/* Перерабатываем плашки балансов под игровой стиль */
+.single-balance-badge {
+    background-color: rgba(131, 132, 134, 0.4) !important; /* Делаем подложку мягкой и полупрозрачной */
+    border: 1px solid rgba(58, 63, 80, 0.5) !important;
+    padding: 4px 4px 4px 16px !important; /* Уменьшаем отступ справа, чтобы кнопка + встала в край */
+    border-radius: 24px !important; /* Идеальная округлая форма капсулы */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important; /* Разносим текст баланса и плюс по краям */
+    gap: 12px !important;
+    min-width: 95px !important; /* Чуть увеличили ширину под новые элементы */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    height: 36px !important;
+    box-sizing: border-box !important;
+}
+
+/* Текст внутри баланса */
+.balance-text-value {
+    font-weight: 900 !important;
+    font-size: 15px !important;
+    color: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+/* КРУГЛАЯ СИНЯЯ КНОПКА ПЛЮСИКА */
+.balance-plus-btn {
+    width: 28px !important;
+    height: 28px !important;
+    background: linear-gradient(135deg, #246bfd 0%, #1253d4 100%) !important; /* Фирменный синий градиент */
+    color: #ffffff !important;
+    text-decoration: none !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    border-radius: 50% !important; /* Делаем кнопку идеально круглой */
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    box-shadow: 0 2px 6px rgba(36, 107, 253, 0.4) !important;
+    transition: transform 0.1s !important;
+    cursor: pointer !important;
+}
+
+.balance-plus-btn:active {
+    transform: scale(0.9) !important; /* Легкий щелчок при нажатии */
+}
+.color-orange { color: #ffaa00; }
+.color-blue { color: #246bfd; }
+
+/* Контейнер всей рулетки: опускаем пониже от шапки и LIVE-ленты */
+.roulette-container {
+    width: 100% !important;
+    margin-top: 45px !important; /* ⬅️ Увеличили отступ, чтобы опустить ленту ниже */
+    margin-bottom: auto !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Окошко рулетки: полностью прозрачное, растянутое на весь экран */
+.roulette-track-wrapper {
+    width: 100% !important;
+    max-width: 100vw !important; /* Убирает сжатие по бокам */
+    height: 300px !important; /* Высота барабана */
+    
+    /* ⬇️ УДАЛИЛИ ЦВЕТ И СДЕЛАЛИ ДОРОЖКУ ПОЛНОСТЬЮ ПРОЗРАЧНОЙ */
+    background: transparent !important; 
+    
+    /* ⬇️ УБРАЛИ ЛИНИИ ОБВОДКИ СВЕРХУ И СНИЗУ */
+    border-top: none !important;
+    border-bottom: none !important;
+    
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Делаем сами карточки предметов внутри рулетки крупнее */
+.roulette-item {
+    width: 200px !important;  /* ⬅️ Увеличили ширину карточки (было 110px) */
+    height: 250px !important; /* ⬅️ Увеличили высоту карточки (было 140px) */
+    background: linear-gradient(135deg, #1b1e26 0%, #111216 100%) !important;
+    border: 1px solid #232731 !important;
+    border-radius: 18px !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 18px 10px !important; /* Внутренние отступы стали свободнее */
+    box-sizing: border-box !important;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4) !important;
+}
+
+/* Пропорционально увеличиваем размер призов внутри больших карточек */
+.item-emoji {
+    font-size: 100px !important; /* ⬅️ Сделали тыквы, сумки и кольца еще больше и сочнее */
+    margin-top: 6px !important;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)) !important;
+}
+
+/* Фигурные стрелки */
+.roulette-arrow {
+    font-size: 26px !important; /* Сделали стрелки значительно больше */
+    color: #ffaa00;
+}
+
+/* СДВИГАЕМ КНОПКИ В САМЫЙ НИЗ И ДЕЛАЕМ ИХ МАССИВНЕЕ */
+.case-controls-wrapper {
+    margin-top: auto !important; /* Жестко прижимает блок к нижнему краю */
+    padding-bottom: 30px !important; /* Отступ от самого низа экрана */
+    gap: 16px !important;
+}
+.sub-btn {
+    padding: 15px 0 !important; /* Сделали кнопки Настройки и Призы выше */
+    font-size: 14px !important;
+    border-radius: 18px !important;
+}
+.main-spin-btn {
+    padding: 18px 0 !important; /* Крупная массивная кнопка Крутить */
+    font-size: 18px !important;
+    border-radius: 20px !important;
+}
+/* НАСТРОЙКА КАРТОЧКИ ПРЕДМЕТА: СУЖАЕМ ДЛЯ НЕБОЛЬШОГО РАССТОЯНИЯ */
+.daily-green-theme .roulette-item {
+    background: transparent !important; /* Полностью прозрачная основа */
+    border: none !important;
+    box-shadow: none !important;
+    width: 105px !important;  /* ⬅️ Немного уменьшили ширину карточки, чтобы сблизить предметы */
+    height: 165px !important; /* Высота под размер картинок и плашек */
+    flex-shrink: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 10px 4px !important;
+    box-sizing: border-box !important;
+}
+
+/* КРУГЛАЯ ЗАБЛЮРЕННАЯ ПЛАШКА СТОИМОСТИ (МАТОВОЕ СТЕКЛО) */
+.daily-green-theme .item-reward-cost {
+    background-color: rgba(255, 255, 255, 0.08) !important; /* Полупрозрачный белый фон */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Тонкий стеклянный контур */
+    
+    /* ⬅️ ЭФФЕКТ МАТОВОГО СТЕКЛА И РАЗМЫТИЯ ФОНА ПОД ЦЕНОЙ */
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    
+    padding: 6px 16px !important; /* Внутренние отступы, чтобы плашка вытянулась в капсулу */
+    border-radius: 20px !important; /* Идеально закругленные края */
+    
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important; /* Белый цвет текста цены */
+    
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important; /* Легкая тень под капсулой */
+    width: 85% !important; /* Плашка аккуратно подгоняется под ширину картинки */
+    box-sizing: border-box !important;
+    margin-top: auto !important; /* Выталкивает капсулу строго в самый низ */
+}
+
+/* Корректируем зазор для самого смайлика/картинки */
+.daily-green-theme .item-emoji {
+    font-size: 50px !important;
+    margin-bottom: 5px !important;
+}
+
+/* СТИЛИ ДЛЯ ОБНОВЛЕННЫХ СТРЕЛОЧЕК-УГОЛКОВ */
+.daily-green-theme .roulette-arrow {
+    font-size: 32px !important; /* Оптимальный размер для тонких стрелок */
+    color: rgba(255, 255, 255, 0.4) !important; /* Делаем их полупрозрачными и аккуратными, как на макете */
+    font-weight: 300 !important;
+    transition: color 0.2s !important;
+    text-shadow: none !important; /* Убираем старое неоновое свечение */
+}
+
+/* Найди эти строчки в самом низу и замени цифры: */
+.daily-green-theme .arrow-top {
+    margin-bottom: -32px !important; /* Было -15px, увеличили сдвиг внутрь */
+    font-size: 26px !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.daily-green-theme .arrow-bottom {
+    margin-top: -32px !important; /* Было -15px, увеличили сдвиг внутрь */
+    font-size: 26px !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+/* Найди этот блок в самом конце и замени его свойства на эти: */
+.daily-green-theme .case-controls-wrapper {
+    position: fixed !important;   /* ⬅️ ДОБАВИТЬ ЭТО (привязывает к экрану) */
+    bottom: 40px !important;      /* ⬅️ ДОБАВИТЬ ЭТО (высота от самого низа) */
+    left: 50% !important;         /* ⬅️ ДОБАВИТЬ ЭТО (для центрирования на ПК) */
+    transform: translateX(-50%) !important; /* ⬅️ ДОБАВИТЬ ЭТО */
+    
+    width: 100% !important;
+    max-width: 480px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    z-index: 100 !important;
+}
+/* На всякий случай убедимся, что обертка распределяет контент правильно */
+.daily-green-theme {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+}
